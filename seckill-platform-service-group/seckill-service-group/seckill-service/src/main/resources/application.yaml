@@ -19,11 +19,14 @@ spring:
   redis:
     redisson:
       file: classpath:redis/redisson-single.yaml
-seckill:
-  thread:
-    pool:
-      corePoolSize: 15
-      maxPoolSize: 15
-      queueCapacity: 30
-      keepAliveSeconds: 60
-      threadNamePrefix: secKill-thread-
+platform:
+  threadpools:
+    configType: local
+    executors:
+      - corePoolSize: 15
+        maxPoolSize: 15
+        queueCapacity: 30
+        keepAliveSeconds: 60
+        threadPoolName: secKill-thread-pool
+        rejectedExecutionHandlerType: CustomRejectedPolicy
+        customRejectedPolicyClassPath: com.seckill.platform.service.seckill.infrastructure.support.threadpool.SecKillAbortPolicy

@@ -1,6 +1,7 @@
 package com.seckill.platform.service.seckill.domain.seckill.service.impl;
 
 import com.seckill.framework.redisson.util.RedissonUtils;
+import com.seckill.framework.threadpool.support.PlatformThreadPoolTaskExecutor;
 import com.seckill.platform.service.seckill.domain.event.task.AsyncSecKillService;
 import com.seckill.platform.service.seckill.domain.seckill.service.SecKillService;
 import com.seckill.platform.service.seckill.dto.SecKillDto;
@@ -8,7 +9,9 @@ import com.seckill.platform.service.seckill.dto.SecKillInitDto;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,6 +28,9 @@ public class SecKillServiceImpl implements SecKillService {
 
     @Autowired
     private AsyncSecKillService asyncSecKillService;
+
+    @Autowired
+    private DefaultListableBeanFactory defaultListableBeanFactory;
 
     @Override
     public void executeSecKill(SecKillDto secKillDto) {
@@ -131,10 +137,24 @@ public class SecKillServiceImpl implements SecKillService {
         RBoundedBlockingQueue<Object> secKillUserQueue = RedissonUtils.getRBoundedBlockingQueue("secKill-user-" + secKillInitDto.getActivityId());
         Long capacity=secKillInitDto.getGoodStack()+(secKillInitDto.getGoodStack()/2);
         secKillUserQueue.trySetCapacity(capacity.intValue());
-        //刷新spring容器
-//        PlatformThreadPoolTaskExecutor secKillThreadPool = (PlatformThreadPoolTaskExecutor) SpringUtil.getBean("secKillThreadPool");
-//        secKillThreadPool.setCorePoolSize(secKillInitDto.getCorePoolSize());
-//        secKillThreadPool.setMaxPoolSize(secKillInitDto.getMaxPoolSize());
-//        secKillThreadPool.setCorePoolSize(capacity.intValue());
+        //刷新本地线程池
+        if(StringUtils.hasText(secKillInitDto.getThreadPoolName())){
+            PlatformThreadPoolTaskExecutor platformThreadPoolTaskExecutor = getExecutor(secKillInitDto.getThreadPoolName());
+            if(platformThreadPoolTaskExecutor!=null){
+                platformThreadPoolTaskExecutor.setCorePoolSize(secKillInitDto.getCorePoolSize());
+                platformThreadPoolTaskExecutor.setMaxPoolSize(secKillInitDto.getMaxPoolSize());
+                platformThreadPoolTaskExecutor.setQueueCapacity(secKillUserQueue.remainingCapacity());
+                platformThreadPoolTaskExecutor.initialize();
+            }
+        }
+    }
+
+    private PlatformThreadPoolTaskExecutor getExecutor(String threadPoolName) {
+        boolean containsBean = defaultListableBeanFactory.containsBean(threadPoolName);
+        if(!containsBean){
+            return null;
+        }
+        PlatformThreadPoolTaskExecutor myThreadPoolTaskExecutor = defaultListableBeanFactory.getBean(threadPoolName, PlatformThreadPoolTaskExecutor.class);
+        return myThreadPoolTaskExecutor;
     }
 }

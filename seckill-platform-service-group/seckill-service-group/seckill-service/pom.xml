@@ -50,6 +50,10 @@
 <!--            <groupId>com.seckill.framework</groupId>-->
 <!--            <artifactId>seckill-platform-starter-stream-rocketmq</artifactId>-->
 <!--        </dependency>-->
+        <dependency>
+            <groupId>com.seckill.framework</groupId>
+            <artifactId>seckill-platform-starter-threadpool</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

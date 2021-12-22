@@ -37,4 +37,8 @@ public class SecKillInitDto {
      * 最大线程数
      */
     private int maxPoolSize=10;
+    /**
+     * 线程池名称
+     */
+    private String threadPoolName;
 }

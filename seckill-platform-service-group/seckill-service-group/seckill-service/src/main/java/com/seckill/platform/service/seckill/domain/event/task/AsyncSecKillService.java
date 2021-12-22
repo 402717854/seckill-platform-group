@@ -26,7 +26,7 @@ public class AsyncSecKillService {
      * @param secKillStockAtomicLong
      * @param secKillSuccessRMap
      */
-    @Async(value = "secKillThreadPool")
+    @Async(value = "secKill-thread-pool")
     public void asyncSecKill(SecKillDto secKillDto, RAtomicLong secKillStockAtomicLong, RMap<Object, Object> secKillSuccessRMap, RSet<Object> secKillingSet){
         //5判断是否有库存
         long stock2 = secKillStockAtomicLong.get();

@@ -1,4 +1,4 @@
-package com.seckill.platform.service.seckill.infrastructure.config.support;
+package com.seckill.platform.service.seckill.infrastructure.support.threadpool;
 
 import lombok.extern.slf4j.Slf4j;
 
