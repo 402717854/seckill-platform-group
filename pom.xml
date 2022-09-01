@@ -10,8 +10,12 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>seckill-platform-service-group</module>
-        <module>seckill-platform-business</module>
+        <module>seckill-platform-gateway</module>
         <module>seckill-platform-system</module>
+        <module>seckill-platform-auth</module>
+        <module>seckill-platform-admin</module>
+        <module>seckill-platform-common</module>
+        <module>seckill-platform-sso</module>
     </modules>
 
     <properties>
