@@ -29,15 +29,21 @@ spring:
             - Path=/seckill-platform-sso/**
           filters:
             - StripPrefix=1
+        - id: seckill-platform-service
+          uri: lb://seckill-platform-service
+          predicates:
+            - Path=/seckill-server/**
+          filters:
+            - StripPrefix=1
   security:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: 'http://localhost:8201/mall-auth/rsa/publicKey' #配置RSA的公钥访问地址
+          jwk-set-uri: 'http://localhost:8201/seckill-platform-auth/rsa/publicKey' #配置RSA的公钥访问地址
   redis:
     database: 0
     port: 6379
-    host: localhost
+    host: 192.168.66.9
     password:
 secure:
   ignore:
@@ -52,18 +58,16 @@ secure:
       - "/*/*.ico"
       - "/webjars/**"
       - "/actuator/**"
-      - "/mall-auth/oauth/token"
-      - "/mall-auth/rsa/publicKey"
-      - "/mall-search/**"
-      - "/mall-portal/sso/login"
-      - "/mall-portal/sso/register"
-      - "/mall-portal/sso/getAuthCode"
-      - "/mall-portal/home/**"
-      - "/mall-portal/product/**"
-      - "/mall-portal/brand/**"
-      - "/mall-admin/admin/login"
-      - "/mall-admin/admin/register"
-      - "/mall-admin/minio/upload"
+      - "/seckill-platform-auth/oauth/token"
+      - "/seckill-platform-auth/rsa/publicKey"
+      - "/seckill-platform-search/**"
+      - "/seckill-platform-sso/sso/login"
+      - "/seckill-platform-sso/sso/register"
+      - "/seckill-platform-sso/sso/getAuthCode"
+      - "/seckill-platform-portal/home/**"
+      - "/seckill-platform-portal/product/**"
+      - "/seckill-platform-admin/admin/login"
+      - "/seckill-platform-admin/admin/register"
 management: #开启SpringBoot Admin的监控
   endpoints:
     web:

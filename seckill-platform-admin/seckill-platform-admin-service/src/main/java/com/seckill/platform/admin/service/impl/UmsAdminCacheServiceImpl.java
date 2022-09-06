@@ -1,5 +1,6 @@
 package com.seckill.platform.admin.service.impl;
 
+import cn.hutool.json.JSONUtil;
 import com.seckill.platform.admin.model.UmsAdmin;
 import com.seckill.platform.admin.service.UmsAdminCacheService;
 import com.seckill.platform.admin.service.UmsAdminService;
@@ -41,5 +42,24 @@ public class UmsAdminCacheServiceImpl implements UmsAdminCacheService {
     public void setAdmin(UmsAdmin admin) {
         String key = REDIS_DATABASE + ":" + REDIS_KEY_ADMIN + ":" + admin.getId();
         redisService.set(key, admin, REDIS_EXPIRE);
+    }
+
+    @Override
+    public void setLoginAdmin(String token, UmsAdmin admin) {
+        String key = REDIS_DATABASE + ":" + REDIS_KEY_ADMIN + ":" + token;
+        String string = JSONUtil.parse(admin).toString();
+        redisService.set(key,string,REDIS_EXPIRE);
+    }
+
+    @Override
+    public String getLoginAdmin(String token, UmsAdmin admin) {
+        String key = REDIS_DATABASE + ":" + REDIS_KEY_ADMIN + ":" + token;
+        return (String) redisService.get(key);
+    }
+
+    @Override
+    public void delLoginAdmin(String token) {
+        String key = REDIS_DATABASE + ":" + REDIS_KEY_ADMIN + ":" + token;
+        redisService.del(key);
     }
 }

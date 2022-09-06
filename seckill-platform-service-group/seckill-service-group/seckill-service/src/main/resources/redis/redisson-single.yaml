@@ -1,5 +1,5 @@
 singleServerConfig:
-  address: redis://127.0.0.1:6379
+  address: redis://192.168.66.9:6379
   subscriptionConnectionMinimumIdleSize: 1
   subscriptionConnectionPoolSize: 50
   connectionMinimumIdleSize: 24

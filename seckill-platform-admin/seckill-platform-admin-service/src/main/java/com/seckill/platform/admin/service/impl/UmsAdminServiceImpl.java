@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.BCrypt;
 import cn.hutool.extra.spring.SpringUtil;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.github.pagehelper.PageHelper;
 import com.seckill.platform.admin.dao.UmsAdminRoleRelationDao;
@@ -98,7 +99,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         CommonResult restResult = authService.getAccessToken(params);
         if(ResultCode.SUCCESS.getCode()==restResult.getCode()&&restResult.getData()!=null){
 //            updateLoginTimeByUsername(username);
-            insertLoginLog(username);
+            insertLoginLog(username,restResult);
         }
         return restResult;
     }
@@ -107,7 +108,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
      * 添加登录记录
      * @param username 用户名
      */
-    private void insertLoginLog(String username) {
+    private void insertLoginLog(String username,CommonResult restResult) {
         UmsAdmin admin = getAdminByUsername(username);
         if(admin==null) {
             return;
@@ -119,6 +120,9 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         HttpServletRequest request = attributes.getRequest();
         loginLog.setIp(request.getRemoteAddr());
         loginLogMapper.insert(loginLog);
+        JSONObject jsonObject = (JSONObject) restResult.getData();
+        String token = (String)jsonObject.get("token");
+        getCacheService().setLoginAdmin(token,admin);
     }
 
     /**
@@ -267,5 +271,14 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     @Override
     public UmsAdminCacheService getCacheService() {
         return SpringUtil.getBean(UmsAdminCacheService.class);
+    }
+
+    @Override
+    public void logout() {
+        String userStr = request.getHeader(AuthConstant.USER_TOKEN_HEADER);
+        if(StrUtil.isEmpty(userStr)){
+            Asserts.fail(ResultCode.UNAUTHORIZED);
+        }
+        getCacheService().delLoginAdmin(userStr);
     }
 }

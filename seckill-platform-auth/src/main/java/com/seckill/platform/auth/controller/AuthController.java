@@ -32,7 +32,7 @@ public class AuthController {
     private TokenEndpoint tokenEndpoint;
 
     @ApiOperation("Oauth2获取token")
-    @RequestMapping(value = "/token2", method = RequestMethod.POST)
+    @RequestMapping(value = "/token", method = RequestMethod.POST)
     public CommonResult<Oauth2TokenDto> postAccessToken(HttpServletRequest request,
                                                         @ApiParam("授权模式") @RequestParam String grant_type,
                                                         @ApiParam("Oauth2客户端ID") @RequestParam String client_id,

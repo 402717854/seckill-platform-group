@@ -6,6 +6,7 @@ import com.seckill.platform.gateway.authorization.AuthorizationManager;
 import com.seckill.platform.gateway.component.RestAuthenticationEntryPoint;
 import com.seckill.platform.gateway.component.RestfulAccessDeniedHandler;
 import com.seckill.platform.gateway.filter.IgnoreUrlsRemoveJwtFilter;
+import com.seckill.platform.gateway.filter.LogoutRemoveJwtFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,6 +35,7 @@ public class ResourceServerConfig {
     private final RestfulAccessDeniedHandler restfulAccessDeniedHandler;
     private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
     private final IgnoreUrlsRemoveJwtFilter ignoreUrlsRemoveJwtFilter;
+    private final LogoutRemoveJwtFilter logoutRemoveJwtFilter;
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
@@ -42,7 +44,8 @@ public class ResourceServerConfig {
         //自定义处理JWT请求头过期或签名错误的结果
         http.oauth2ResourceServer().authenticationEntryPoint(restAuthenticationEntryPoint);
         //对白名单路径，直接移除JWT请求头
-        http.addFilterBefore(ignoreUrlsRemoveJwtFilter,SecurityWebFiltersOrder.AUTHENTICATION);
+        http.addFilterBefore(ignoreUrlsRemoveJwtFilter,SecurityWebFiltersOrder.HTTP_BASIC);
+        http.addFilterBefore(logoutRemoveJwtFilter,SecurityWebFiltersOrder.FORM_LOGIN);
         http.authorizeExchange()
                 .pathMatchers(ArrayUtil.toArray(ignoreUrlsConfig.getUrls(),String.class)).permitAll()//白名单配置
                 .anyExchange().access(authorizationManager)//鉴权管理器配置

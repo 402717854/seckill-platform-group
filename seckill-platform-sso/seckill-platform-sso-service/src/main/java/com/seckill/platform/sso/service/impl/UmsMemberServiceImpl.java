@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.BCrypt;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.seckill.platform.common.api.CommonResult;
 import com.seckill.platform.common.api.ResultCode;
@@ -71,9 +72,9 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     @Override
     public void register(String username, String password, String telephone, String authCode) {
         //验证验证码
-        if(!verifyAuthCode(authCode,telephone)){
-            Asserts.fail("验证码错误");
-        }
+//        if(!verifyAuthCode(authCode,telephone)){
+//            Asserts.fail("验证码错误");
+//        }
         //查询是否已有该用户
         UmsMemberExample example = new UmsMemberExample();
         example.createCriteria().andUsernameEqualTo(username);
@@ -178,7 +179,13 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         params.put("grant_type","password");
         params.put("username",username);
         params.put("password",password);
-        return authService.getAccessToken(params);
+        CommonResult commonResult = authService.getAccessToken(params);
+        LinkedHashMap map = (LinkedHashMap) commonResult.getData();
+        String token = (String)map.get("token");
+        UmsMember record=new UmsMember();
+        record.setUsername(username);
+        memberCacheService.setLoginMember(token,record);
+        return commonResult;
     }
 
     //对输入的验证码进行校验

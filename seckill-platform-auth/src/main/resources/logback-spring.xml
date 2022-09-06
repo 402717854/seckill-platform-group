@@ -73,6 +73,9 @@
     <logger name="org.hibernate.SQL" level="DEBUG"/>
     <logger name="org.thymeleaf.TemplateEngine" level="INFO"/>
     <logger name="org.apache.zookeeper" level="DEBUG"/>
+    <logger name="org.apache.http.impl.conn.PoolingHttpClientConnectionManager" level="WARN"/>
+    <logger name="com.zaxxer.hikari.pool.HikariPool" level="INFO"/>
+    <logger name="io.lettuce.core" level="INFO"/>
 
     <!-- 多环境配置 按照active profile选择分支 -->
     <springProfile name="dev">

@@ -15,7 +15,11 @@ server:
     buffer-size: 16364
 spring:
   application:
-    name: seckill-service
+    name: seckill-platform-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: http://192.168.66.9:8848
   redis:
     redisson:
       file: classpath:redis/redisson-single.yaml

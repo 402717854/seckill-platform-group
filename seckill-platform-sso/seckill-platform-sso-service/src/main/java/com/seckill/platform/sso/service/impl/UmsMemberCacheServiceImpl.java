@@ -1,5 +1,9 @@
 package com.seckill.platform.sso.service.impl;
 
+import cn.hutool.json.JSON;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONString;
+import cn.hutool.json.JSONUtil;
 import com.seckill.platform.common.annotation.CacheException;
 import com.seckill.platform.common.service.RedisService;
 import com.seckill.platform.sso.model.UmsMember;
@@ -57,5 +61,24 @@ public class UmsMemberCacheServiceImpl implements UmsMemberCacheService {
     public String getAuthCode(String telephone) {
         String key = REDIS_DATABASE + ":" + REDIS_KEY_AUTH_CODE + ":" + telephone;
         return (String) redisService.get(key);
+    }
+
+    @Override
+    public void delLoginMember(String token) {
+        String key = REDIS_DATABASE + ":" + REDIS_KEY_MEMBER + ":" + token;
+        redisService.del(key);
+    }
+
+    @Override
+    public String getLoginMember(String token) {
+        String key = REDIS_DATABASE + ":" + REDIS_KEY_MEMBER + ":" + token;
+        String jsonObject = (String) redisService.get(key);
+        return jsonObject;
+    }
+
+    @Override
+    public void setLoginMember(String token, UmsMember member) {
+        String key = REDIS_DATABASE + ":" + REDIS_KEY_MEMBER + ":" + token;
+        redisService.set(key, JSONUtil.parse(member), REDIS_EXPIRE);
     }
 }

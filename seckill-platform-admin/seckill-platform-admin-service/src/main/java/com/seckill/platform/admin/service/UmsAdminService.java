@@ -85,4 +85,6 @@ public interface UmsAdminService {
      * 获取缓存服务
      */
     UmsAdminCacheService getCacheService();
+
+    void logout();
 }

@@ -21,4 +21,17 @@ public interface UmsAdminCacheService {
      * 设置缓存后台用户信息
      */
     void setAdmin(UmsAdmin admin);
+
+    /**
+     * 设置缓存后台登录用户信息
+     */
+    void setLoginAdmin(String token,UmsAdmin admin);
+    /**
+     * 获取缓存后台登录用户信息
+     */
+    String getLoginAdmin(String token,UmsAdmin admin);
+    /**
+     * 删除后台登录用户信息
+     */
+    void delLoginAdmin(String token);
 }

@@ -31,4 +31,15 @@ public interface UmsMemberCacheService {
      * 获取验证码
      */
     String getAuthCode(String telephone);
+    /**
+     * 删除登录会员用户缓存
+     */
+    void delLoginMember(String token);
+
+    /**
+     * 获取登录会员用户缓存
+     */
+    String getLoginMember(String token);
+
+    void setLoginMember(String token,UmsMember member);
 }

@@ -9,9 +9,11 @@ import java.util.Map;
 
 /**
  * 认证服务远程调用
- * Created by macro on 2020/7/19.
+ *
+ * @author wys
+ * @date 2022/09/02
  */
-@FeignClient("mall-auth")
+@FeignClient("seckill-platform-auth")
 public interface AuthService {
 
     @PostMapping(value = "/oauth/token")
