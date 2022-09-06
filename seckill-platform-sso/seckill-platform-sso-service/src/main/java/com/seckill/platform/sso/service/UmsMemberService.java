@@ -57,4 +57,12 @@ public interface UmsMemberService {
      * 登录后获取token
      */
     CommonResult login(String username, String password);
+
+    /**
+     * 退出登录
+     * @return
+     */
+    void logout();
+
+
 }

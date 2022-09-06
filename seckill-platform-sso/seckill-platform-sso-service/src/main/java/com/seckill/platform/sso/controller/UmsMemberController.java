@@ -13,9 +13,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+
 /**
+ * @author lenovo
  * 会员登录注册管理Controller
- * Created by macro on 2018/8/3.
  */
 @Controller
 @Api(tags = "UmsMemberController", description = "会员登录注册管理")
@@ -41,6 +42,13 @@ public class UmsMemberController {
     public CommonResult login(@RequestParam String username,
                               @RequestParam String password) {
         return memberService.login(username, password);
+    }
+    @ApiOperation("会员退出登录")
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult logout() {
+        memberService.logout();
+        return CommonResult.success(null);
     }
 
     @ApiOperation("获取会员信息")

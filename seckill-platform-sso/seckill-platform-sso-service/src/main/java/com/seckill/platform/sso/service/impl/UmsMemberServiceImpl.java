@@ -188,6 +188,15 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         return commonResult;
     }
 
+    @Override
+    public void logout() {
+        String token = request.getHeader(AuthConstant.USER_TOKEN_HEADER);
+        if(StrUtil.isEmpty(token)){
+            Asserts.fail(ResultCode.UNAUTHORIZED);
+        }
+        memberCacheService.delLoginMember(token);
+    }
+
     //对输入的验证码进行校验
     private boolean verifyAuthCode(String authCode, String telephone){
         if(StringUtils.isEmpty(authCode)){
