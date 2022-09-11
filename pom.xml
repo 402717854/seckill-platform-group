@@ -16,6 +16,7 @@
         <module>seckill-platform-admin</module>
         <module>seckill-platform-common</module>
         <module>seckill-platform-sso</module>
+        <module>seckill-platform-search</module>
     </modules>
 
     <properties>
