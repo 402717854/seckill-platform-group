@@ -17,6 +17,7 @@
         <module>seckill-platform-common</module>
         <module>seckill-platform-sso</module>
         <module>seckill-platform-search</module>
+        <module>seckill-platform-canal</module>
     </modules>
 
     <properties>

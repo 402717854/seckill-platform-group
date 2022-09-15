@@ -21,8 +21,8 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * 白名单路径访问时需要移除JWT请求头
- * Created by macro on 2020/7/24.
+ * 判断token在缓存中是否失效，失效删除head值
+ * Created by macro on 2022/09/13.
  */
 @Component
 public class LogoutRemoveJwtFilter implements WebFilter {
