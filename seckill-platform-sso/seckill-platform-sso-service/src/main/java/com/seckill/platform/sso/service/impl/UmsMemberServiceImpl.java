@@ -4,7 +4,6 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.BCrypt;
-import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.seckill.platform.common.api.CommonResult;
 import com.seckill.platform.common.api.ResultCode;
@@ -180,11 +179,11 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         params.put("username",username);
         params.put("password",password);
         CommonResult commonResult = authService.getAccessToken(params);
-        LinkedHashMap map = (LinkedHashMap) commonResult.getData();
-        String token = (String)map.get("token");
-        UmsMember record=new UmsMember();
-        record.setUsername(username);
-        memberCacheService.setLoginMember(token,record);
+        if(ResultCode.SUCCESS.getCode()==commonResult.getCode()&&commonResult.getData()!=null){
+            UmsMember member = getByUsername(username);
+            String key = AuthConstant.REDIS_DATABASE_PREFIX + AuthConstant.ADMIN_CLIENT_ID + ":" + member.getId();
+            memberCacheService.setLoginMember(key,member);
+        }
         return commonResult;
     }
 

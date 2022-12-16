@@ -4,7 +4,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.BCrypt;
 import cn.hutool.extra.spring.SpringUtil;
-import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.github.pagehelper.PageHelper;
 import com.seckill.platform.admin.dao.UmsAdminRoleRelationDao;
@@ -98,21 +97,19 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         params.put("password",password);
         CommonResult restResult = authService.getAccessToken(params);
         if(ResultCode.SUCCESS.getCode()==restResult.getCode()&&restResult.getData()!=null){
-//            updateLoginTimeByUsername(username);
-            insertLoginLog(username,restResult);
+            UmsAdmin admin = getAdminByUsername(username);
+            insertLoginLog(admin,restResult);
+            String key = AuthConstant.REDIS_DATABASE_PREFIX + AuthConstant.ADMIN_CLIENT_ID + ":" + admin.getId();
+            getCacheService().setLoginAdmin(key,admin);
         }
         return restResult;
     }
 
     /**
      * 添加登录记录
-     * @param username 用户名
+     * @param admin 用户名
      */
-    private void insertLoginLog(String username,CommonResult restResult) {
-        UmsAdmin admin = getAdminByUsername(username);
-        if(admin==null) {
-            return;
-        }
+    private void insertLoginLog(UmsAdmin admin,CommonResult restResult) {
         UmsAdminLoginLog loginLog = new UmsAdminLoginLog();
         loginLog.setAdminId(admin.getId());
         loginLog.setCreateTime(new Date());
@@ -120,9 +117,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         HttpServletRequest request = attributes.getRequest();
         loginLog.setIp(request.getRemoteAddr());
         loginLogMapper.insert(loginLog);
-        JSONObject jsonObject = (JSONObject) restResult.getData();
-        String token = (String)jsonObject.get("token");
-        getCacheService().setLoginAdmin(token,admin);
+
     }
 
     /**

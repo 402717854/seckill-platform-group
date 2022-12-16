@@ -7,6 +7,11 @@ package com.seckill.platform.common.constant;
 public interface AuthConstant {
 
     /**
+     * redis 存储前缀
+     */
+    String REDIS_DATABASE_PREFIX="mall:";
+
+    /**
      * JWT存储权限前缀
      */
     String AUTHORITY_PREFIX = "ROLE_";

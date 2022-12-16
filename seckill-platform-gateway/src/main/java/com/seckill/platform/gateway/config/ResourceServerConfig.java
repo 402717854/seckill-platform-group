@@ -25,6 +25,7 @@ import reactor.core.publisher.Mono;
 /**
  * 资源服务器配置
  * Created by macro on 2020/6/19.
+ * 由于 Gateway 使用的是 WebFlux，所以需要使用 @EnableWebFluxSecurity注解开启
  */
 @AllArgsConstructor
 @Configuration
@@ -55,7 +56,12 @@ public class ResourceServerConfig {
                 .and().csrf().disable();
         return http.build();
     }
-
+    /**
+     * @linkhttps://blog.csdn.net/qq_24230139/article/details/105091273
+     * ServerHttpSecurity 没有将 jwt 中 authorities 的负载部分当做 Authentication
+     * 需要把 jwt 的 Claim 中的 authorities 加入
+     * 方案：重新定义 ReactiveAuthenticationManager 权限管理器，默认转换器 JwtGrantedAuthoritiesConverter
+     */
     @Bean
     public Converter<Jwt, ? extends Mono<? extends AbstractAuthenticationToken>> jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();

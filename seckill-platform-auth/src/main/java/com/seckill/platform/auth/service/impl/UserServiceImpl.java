@@ -2,8 +2,6 @@ package com.seckill.platform.auth.service.impl;
 
 import com.seckill.platform.auth.constant.MessageConstant;
 import com.seckill.platform.auth.domain.SecurityUser;
-//import com.seckill.platform.auth.service.UmsAdminService;
-//import com.seckill.platform.auth.service.UmsMemberService;
 import com.seckill.platform.auth.service.UmsAdminService;
 import com.seckill.platform.auth.service.UmsMemberService;
 import com.seckill.platform.common.constant.AuthConstant;
@@ -16,7 +14,6 @@ import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;

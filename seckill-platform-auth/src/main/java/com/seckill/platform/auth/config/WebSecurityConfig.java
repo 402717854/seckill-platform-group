@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -37,14 +38,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 // 配置登陆页/login并允许访问
-                .formLogin().disable()
+//                .formLogin().disable()
                 // 登出页
-                .logout().logoutUrl("/logout").logoutSuccessUrl("/")
-                .and().authorizeRequests()
+//                .logout().logoutUrl("/logout").logoutSuccessUrl("/")
+//                .and().authorizeRequests()
+                .authorizeRequests()
                 .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
                 .antMatchers("/rsa/publicKey").permitAll()
                 .antMatchers("/v2/api-docs").permitAll()
                 .antMatchers("/oauth/token").permitAll()
                 .anyRequest().authenticated();
+    }
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/favor.ioc");
     }
 }
