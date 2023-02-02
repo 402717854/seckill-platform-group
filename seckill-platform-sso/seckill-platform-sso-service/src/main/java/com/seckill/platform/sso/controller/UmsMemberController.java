@@ -77,10 +77,4 @@ public class UmsMemberController {
         return CommonResult.success(null,"密码修改成功");
     }
 
-    @ApiOperation("根据用户名获取通用用户信息")
-    @RequestMapping(value = "/loadByUsername", method = RequestMethod.GET)
-    @ResponseBody
-    public UserDto loadUserByUsername(@RequestParam String username) {
-        return memberService.loadUserByUsername(username);
-    }
 }

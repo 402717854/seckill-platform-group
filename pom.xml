@@ -18,6 +18,7 @@
         <module>seckill-platform-sso</module>
         <module>seckill-platform-search</module>
         <module>seckill-platform-canal</module>
+        <module>seckill-platform-system-new</module>
     </modules>
 
     <properties>

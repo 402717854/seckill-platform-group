@@ -44,3 +44,29 @@ feign:
         connectTimeout: 5000
         readTimeout: 5000
         loggerLevel: BASIC
+# 登录相关配置
+login:
+  #  是否限制单用户登录
+  single-login: false
+  # Redis用户登录缓存配置
+  user-cache:
+    # 存活时间/秒
+    idle-time: 7200
+  #  验证码
+  login-code:
+    # 验证码存值前缀
+    code-key-pre: code-key-
+    #  验证码类型配置 查看 LoginProperties 类
+    code-type: arithmetic
+    #  登录图形验证码有效时间/秒
+    expiration: 120
+    #  验证码高度
+    width: 111
+    #  验证码宽度
+    height: 36
+    # 内容长度
+    length: 2
+    # 字体名称，为空则使用默认字体
+    font-name:
+    # 字体大小
+    font-size: 25

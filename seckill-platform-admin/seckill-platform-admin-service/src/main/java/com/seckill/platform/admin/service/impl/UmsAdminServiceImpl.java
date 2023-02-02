@@ -99,7 +99,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         if(ResultCode.SUCCESS.getCode()==restResult.getCode()&&restResult.getData()!=null){
             UmsAdmin admin = getAdminByUsername(username);
             insertLoginLog(admin,restResult);
-            String key = AuthConstant.REDIS_DATABASE_PREFIX + AuthConstant.ADMIN_CLIENT_ID + ":" + admin.getId();
+            String key = AuthConstant.ADMIN_CLIENT_ID + ":" + admin.getId();
             getCacheService().setLoginAdmin(key,admin);
         }
         return restResult;

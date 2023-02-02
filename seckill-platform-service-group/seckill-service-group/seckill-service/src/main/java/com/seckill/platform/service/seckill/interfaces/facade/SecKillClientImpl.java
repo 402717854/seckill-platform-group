@@ -1,6 +1,6 @@
 package com.seckill.platform.service.seckill.interfaces.facade;
 
-import com.seckill.framework.common.vo.Result;
+import com.seckill.framework.common.result.Result;
 import com.seckill.platform.service.seckill.application.service.SecKillApplicationService;
 import com.seckill.platform.service.seckill.client.SecKillClientApi;
 import com.seckill.platform.service.seckill.dto.SecKillDto;
@@ -27,8 +27,8 @@ public class SecKillClientImpl implements SecKillClientApi {
     @Override
     @PostMapping("/execute")
     public Result executeSecKill(@RequestBody SecKillDto secKillDto) {
-//        secKillApplicationService.executeSecKill(secKillDto);
-        secKillApplicationService.asyncExecuteSecKill(secKillDto);
+        secKillApplicationService.executeSecKill(secKillDto);
+//        secKillApplicationService.asyncExecuteSecKill(secKillDto);
         return Result.success();
     }
 

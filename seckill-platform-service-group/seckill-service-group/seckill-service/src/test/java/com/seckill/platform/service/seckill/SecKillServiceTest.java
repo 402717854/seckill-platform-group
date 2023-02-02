@@ -29,7 +29,7 @@ public class SecKillServiceTest {
                 public void run() {
                     SecKillDto secKillDto = new SecKillDto();
                     secKillDto.setActivityId("activity123456");
-                    secKillDto.setUserId("user123"+ finalI);
+                    secKillDto.setUserId("user"+ finalI);
                     secKillApplicationService.executeSecKill(secKillDto);
                 }
             };

@@ -12,7 +12,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  */
 @EnableFeignClients
 @EnableDiscoveryClient
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.seckill.platform.admin","com.seckill.platform.common"})
 @MapperScan(basePackages = {"com.seckill.platform.admin.mapper","com.seckill.platform.admin.dao"})
 public class SeckillPlatformAdminServiceApplication {
     public static void main(String[] args) {

@@ -37,11 +37,11 @@ public class LogoutRemoveJwtFilter implements WebFilter {
                     JWSObject jwsObject = JWSObject.parse(realToken);
                     String userStr = jwsObject.getPayload().toString();
                     UserDto userDto = JSONUtil.toBean(userStr, UserDto.class);
-                    String key = REDIS_DATABASE + ":" + userDto.getClientId() + ":" + userDto.getId();
+                    String key = REDIS_DATABASE + ":ums:admin:" + userDto.getClientId() + ":" + userDto.getId();
                     //判断缓冲中是否存在登录用户信息
-                    JSONObject jsonObject = (JSONObject)redisTemplate.opsForValue().get(key);
+                    String str= (String) redisTemplate.opsForValue().get(key);
                     //缓存中不存在的登录信息移除JWT请求头
-                    if(jsonObject==null){
+                    if(StrUtil.isBlank(str)){
                         request = exchange.getRequest().mutate().header(AuthConstant.JWT_TOKEN_HEADER, "").build();
                         exchange = exchange.mutate().request(request).build();
                         return chain.filter(exchange);

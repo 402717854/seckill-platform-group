@@ -4,6 +4,7 @@ import com.seckill.platform.auth.constant.MessageConstant;
 import com.seckill.platform.auth.domain.SecurityUser;
 import com.seckill.platform.auth.service.UmsAdminService;
 import com.seckill.platform.auth.service.UmsMemberService;
+import com.seckill.platform.common.api.CommonResult;
 import com.seckill.platform.common.constant.AuthConstant;
 import com.seckill.platform.common.domain.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,21 +36,28 @@ public class UserServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         String clientId = request.getParameter("client_id");
-        UserDto userDto;
+        CommonResult<UserDto> commonResult;
         if(AuthConstant.ADMIN_CLIENT_ID.equals(clientId)){
 //            userDto=new UserDto();
 //            userDto.setUsername("admin");
 //            userDto.setStatus(1);
 //            userDto.setPassword(new BCryptPasswordEncoder().encode("123456"));
-            userDto = adminService.loadUserByUsername(username);
+            commonResult = adminService.loadUserByUsername(username);
         }else{
 //            userDto=new UserDto();
 //            userDto.setUsername("potal");
 //            userDto.setStatus(1);
 //            userDto.setPassword(new BCryptPasswordEncoder().encode("123456"));
-            userDto = memberService.loadUserByUsername(username);
+            commonResult = memberService.loadUserByUsername(username);
         }
-        if (userDto==null) {
+        if (commonResult==null) {
+            throw new UsernameNotFoundException(MessageConstant.USERNAME_PASSWORD_ERROR);
+        }
+        if(200!=commonResult.getCode()){
+            throw new UsernameNotFoundException(MessageConstant.USERNAME_PASSWORD_ERROR);
+        }
+        UserDto userDto = commonResult.getData();
+        if(userDto==null){
             throw new UsernameNotFoundException(MessageConstant.USERNAME_PASSWORD_ERROR);
         }
         userDto.setClientId(clientId);
