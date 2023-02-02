@@ -15,7 +15,7 @@ import java.util.List;
  * @date 2022/9/14 10:02
  */
 @Component
-public class CannalClient implements InitializingBean {
+public class CanalClient implements InitializingBean {
 
     private final static int BATCH_SIZE = 1000;
 

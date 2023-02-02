@@ -11,28 +11,34 @@ spring:
           enabled: true
           lower-case-service-id: true #使用小写service-id
       routes: #配置路由路径
-        - id: seckill-platform-auth
+        - id: seckill-platform-auth-route
           uri: lb://seckill-platform-auth
           predicates:
             - Path=/seckill-platform-auth/**
           filters:
             - StripPrefix=1
-        - id: seckill-platform-admin
+        - id: seckill-platform-admin-route
           uri: lb://seckill-platform-admin
           predicates:
             - Path=/seckill-platform-admin/**
           filters:
             - StripPrefix=1
-        - id: seckill-platform-sso
+        - id: seckill-platform-sso-route
           uri: lb://seckill-platform-sso
           predicates:
             - Path=/seckill-platform-sso/**
           filters:
             - StripPrefix=1
-        - id: seckill-platform-service
+        - id: seckill-platform-service-route
           uri: lb://seckill-platform-service
           predicates:
             - Path=/seckill-server/**
+          filters:
+            - StripPrefix=1
+        - id: seckill-platform-search-route
+          uri: lb://seckill-platform-search
+          predicates:
+            - Path=/seckill-search/**
           filters:
             - StripPrefix=1
   security:
@@ -76,3 +82,10 @@ management: #开启SpringBoot Admin的监控
   endpoint:
     health:
       show-details: always
+##自定义服务的负载均衡策略
+seckill-platform-search:
+  ribbon:
+    #使用的负载均衡策略
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule
+    #配置的微服务的服务器ip端口
+    #listOfServers: localhost:1001, localhost:1002
