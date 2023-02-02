@@ -1,6 +1,5 @@
 package com.seckill.platform.service.seckill.domain.seckill.service;
 
-import com.seckill.framework.common.vo.Result;
 import com.seckill.platform.service.seckill.dto.SecKillDto;
 import com.seckill.platform.service.seckill.dto.SecKillInitDto;
 

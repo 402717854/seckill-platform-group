@@ -1,6 +1,6 @@
 package com.seckill.platform.service.seckill.client;
 
-import com.seckill.framework.common.vo.Result;
+import com.seckill.framework.common.result.Result;
 import com.seckill.platform.service.seckill.dto.SecKillDto;
 import com.seckill.platform.service.seckill.dto.SecKillInitDto;
 import org.springframework.cloud.openfeign.FeignClient;

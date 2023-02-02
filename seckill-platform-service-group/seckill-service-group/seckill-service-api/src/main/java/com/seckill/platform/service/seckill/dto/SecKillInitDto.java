@@ -41,4 +41,15 @@ public class SecKillInitDto {
      * 线程池名称
      */
     private String threadPoolName;
+
+    /**
+     * 活动开始时间
+     * yyyy-MM-dd HH:mm:ss
+     */
+    private String startTime="2023-01-01 00:00:00";
+    /**
+     * 活动结束时间
+     * yyyy-MM-dd HH:mm:ss
+     */
+    private String endTime="2023-12-31 23:59:59";
 }
