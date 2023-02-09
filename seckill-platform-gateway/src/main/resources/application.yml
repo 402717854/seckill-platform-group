@@ -14,31 +14,31 @@ spring:
         - id: seckill-platform-auth-route
           uri: lb://seckill-platform-auth
           predicates:
-            - Path=/seckill-platform-auth/**
+            - Path=/auth/**
           filters:
             - StripPrefix=1
         - id: seckill-platform-admin-route
           uri: lb://seckill-platform-admin
           predicates:
-            - Path=/seckill-platform-admin/**
+            - Path=/admin/**
           filters:
             - StripPrefix=1
         - id: seckill-platform-sso-route
           uri: lb://seckill-platform-sso
           predicates:
-            - Path=/seckill-platform-sso/**
+            - Path=/sso/**
           filters:
             - StripPrefix=1
         - id: seckill-platform-service-route
           uri: lb://seckill-platform-service
           predicates:
-            - Path=/seckill-server/**
+            - Path=/server/**
           filters:
             - StripPrefix=1
         - id: seckill-platform-search-route
           uri: lb://seckill-platform-search
           predicates:
-            - Path=/seckill-search/**
+            - Path=/search/**
           filters:
             - StripPrefix=1
   security:

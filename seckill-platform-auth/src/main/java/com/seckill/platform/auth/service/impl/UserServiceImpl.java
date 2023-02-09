@@ -2,7 +2,7 @@ package com.seckill.platform.auth.service.impl;
 
 import com.seckill.platform.auth.constant.MessageConstant;
 import com.seckill.platform.auth.domain.SecurityUser;
-import com.seckill.platform.auth.service.UmsAdminService;
+import com.seckill.platform.auth.service.SysAdminService;
 import com.seckill.platform.auth.service.UmsMemberService;
 import com.seckill.platform.common.constant.AuthConstant;
 import com.seckill.platform.common.domain.UserDto;
@@ -14,6 +14,7 @@ import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 public class UserServiceImpl implements UserDetailsService {
 
     @Autowired
-    private UmsAdminService adminService;
+    private SysAdminService adminService;
     @Autowired
     private UmsMemberService memberService;
     @Autowired
@@ -37,11 +38,11 @@ public class UserServiceImpl implements UserDetailsService {
         String clientId = request.getParameter("client_id");
         UserDto userDto;
         if(AuthConstant.ADMIN_CLIENT_ID.equals(clientId)){
-//            userDto=new UserDto();
-//            userDto.setUsername("admin");
-//            userDto.setStatus(1);
-//            userDto.setPassword(new BCryptPasswordEncoder().encode("123456"));
-            userDto = adminService.loadUserByUsername(username);
+            userDto=new UserDto();
+            userDto.setUsername("admin");
+            userDto.setStatus(1);
+            userDto.setPassword(new BCryptPasswordEncoder().encode("123456"));
+//            userDto = adminService.loadUserByUsername(username);
         }else{
 //            userDto=new UserDto();
 //            userDto.setUsername("potal");

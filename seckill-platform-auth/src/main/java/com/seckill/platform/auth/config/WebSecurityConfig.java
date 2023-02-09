@@ -37,11 +37,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                // 配置登陆页/login并允许访问
-//                .formLogin().disable()
-                // 登出页
-//                .logout().logoutUrl("/logout").logoutSuccessUrl("/")
-//                .and().authorizeRequests()
                 .authorizeRequests()
                 .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
                 .antMatchers("/rsa/publicKey").permitAll()

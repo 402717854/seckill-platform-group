@@ -34,7 +34,7 @@ public interface AuthConstant {
     /**
      * 后台管理接口路径匹配
      */
-    String ADMIN_URL_PATTERN = "/seckill-platform-admin/**";
+    String ADMIN_URL_PATTERN = "/admin/**";
 
     /**
      * Redis缓存权限规则key
@@ -44,12 +44,12 @@ public interface AuthConstant {
     /**
      * 认证信息Http请求头
      */
-    String JWT_TOKEN_HEADER = "Authorization";
+    String TOKEN_HEADER = "Authorization";
 
     /**
      * JWT令牌前缀
      */
-    String JWT_TOKEN_PREFIX = "Bearer ";
+    String TOKEN_PREFIX = "Bearer ";
 
     /**
      * 用户信息Http请求头

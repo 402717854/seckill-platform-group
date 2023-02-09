@@ -52,7 +52,7 @@ public class AuthController {
                 .token(oAuth2AccessToken.getValue())
                 .refreshToken(oAuth2AccessToken.getRefreshToken().getValue())
                 .expiresIn(oAuth2AccessToken.getExpiresIn())
-                .tokenHead(AuthConstant.JWT_TOKEN_PREFIX).build();
+                .tokenHead(AuthConstant.TOKEN_PREFIX).build();
 
         return CommonResult.success(oauth2TokenDto);
     }

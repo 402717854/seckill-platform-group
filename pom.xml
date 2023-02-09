@@ -11,13 +11,12 @@
     <modules>
         <module>seckill-platform-service-group</module>
         <module>seckill-platform-gateway</module>
-        <module>seckill-platform-system</module>
         <module>seckill-platform-auth</module>
-        <module>seckill-platform-admin</module>
         <module>seckill-platform-common</module>
         <module>seckill-platform-sso</module>
         <module>seckill-platform-search</module>
         <module>seckill-platform-canal</module>
+        <module>seckill-platform-system</module>
     </modules>
 
     <properties>

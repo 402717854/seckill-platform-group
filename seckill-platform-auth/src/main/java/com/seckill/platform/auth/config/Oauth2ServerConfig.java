@@ -1,12 +1,10 @@
 package com.seckill.platform.auth.config;
 
-import com.seckill.platform.auth.component.JwtTokenEnhancer;
 import com.seckill.platform.auth.service.impl.UserServiceImpl;
 import com.seckill.platform.common.constant.AuthConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,15 +13,9 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
-import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
-import org.springframework.security.rsa.crypto.KeyStoreKeyFactory;
 
 import javax.sql.DataSource;
-import java.security.KeyPair;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 认证服务器配置
@@ -37,9 +29,6 @@ public class Oauth2ServerConfig extends AuthorizationServerConfigurerAdapter {
     private UserServiceImpl userDetailsService;
     @Autowired
     private AuthenticationManager authenticationManager;
-    @Autowired
-    private JwtTokenEnhancer jwtTokenEnhancer;
-
     @Autowired
     private DataSource dataSource;
     @Autowired
@@ -88,14 +77,8 @@ public class Oauth2ServerConfig extends AuthorizationServerConfigurerAdapter {
      */
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        TokenEnhancerChain enhancerChain = new TokenEnhancerChain();
-        List<TokenEnhancer> delegates = new ArrayList<>();
-        delegates.add(jwtTokenEnhancer);
-        delegates.add(accessTokenConverter());
-        enhancerChain.setTokenEnhancers(delegates); //配置JWT的内容增强器
         endpoints.authenticationManager(authenticationManager)
-                .userDetailsService(userDetailsService) //配置加载用户信息的服务
-                .tokenEnhancer(enhancerChain);//token里加点信息
+                .userDetailsService(userDetailsService); //配置加载用户信息的服务
     }
 
     /**
@@ -123,32 +106,6 @@ public class Oauth2ServerConfig extends AuthorizationServerConfigurerAdapter {
                 .tokenKeyAccess("permitAll()")// 开启/oauth/token_key验证端口无权限访问
                 .checkTokenAccess("isAuthenticated()") // 开启/oauth/check_token验证端口认证权限访问
                 .allowFormAuthenticationForClients();//允许客户表单认证
-    }
-
-    /**
-     * 配置令牌 管理 (jwtAccessTokenConverter)
-     * JwtAccessTokenConverter是用来生成token的转换器，而token令牌默认是有签名的，且资源服务器需要验证这个签名。此处的加密及验签包括两种方式：
-     * 对称加密、非对称加密（公钥密钥）
-     * 对称加密需要授权服务器和资源服务器存储同一key值，而非对称加密可使用密钥加密，暴露公钥给资源服务器验签
-     * @return
-     */
-    @Bean
-    public JwtAccessTokenConverter accessTokenConverter() {
-        JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
-        //设置秘钥公钥对
-        jwtAccessTokenConverter.setKeyPair(keyPair());
-        return jwtAccessTokenConverter;
-    }
-
-    /**
-     * 使用非对称加密算法来对Token进行签名
-     * @return
-     */
-    @Bean
-    public KeyPair keyPair() {
-        //从classpath下的证书中获取秘钥公钥对
-        KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("jwt.jks"), "123456".toCharArray());
-        return keyStoreKeyFactory.getKeyPair("jwt", "123456".toCharArray());
     }
 
 }
