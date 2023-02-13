@@ -13,22 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.seckill.platform.system.common.dto;
+package com.seckill.platform.system.modules.system.service;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
+import com.seckill.platform.system.modules.system.service.dto.UserLoginDto;
 
 /**
-* @author Zheng Jie
-* @date 2019-6-10 16:32:18
-*/
-@Data
-@NoArgsConstructor
-public class JobSmallDto implements Serializable {
+ * @author wangyongsheng
+ * @date 2018-11-23
+ */
+public interface UserDetailService {
 
-    private Long id;
-
-    private String name;
+    UserLoginDto loadUserByUsername(String username);
 }

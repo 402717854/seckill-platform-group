@@ -17,6 +17,7 @@ package com.seckill.platform.system.modules.system.rest;
 
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.seckill.framework.redisson.util.RedissonUtils;
 import com.seckill.platform.common.api.CommonResult;
 import com.seckill.platform.common.api.ResultCode;
 import com.seckill.platform.common.constant.AuthConstant;
@@ -24,11 +25,7 @@ import com.seckill.platform.system.common.annotation.rest.AnonymousDeleteMapping
 import com.seckill.platform.system.common.annotation.rest.AnonymousGetMapping;
 import com.seckill.platform.system.common.annotation.rest.AnonymousPostMapping;
 import com.seckill.platform.system.common.config.RsaProperties;
-import com.seckill.platform.system.common.dto.UserLoginDto;
 import com.seckill.platform.system.common.exception.BadRequestException;
-import com.seckill.platform.system.common.service.UserDetailService;
-import com.seckill.platform.system.common.utils.CurrentUserUtils;
-import com.seckill.platform.system.common.utils.RedisUtils;
 import com.seckill.platform.system.common.utils.RsaUtils;
 import com.seckill.platform.system.common.utils.StringUtils;
 import com.seckill.platform.system.config.bean.LoginCodeEnum;
@@ -36,8 +33,11 @@ import com.seckill.platform.system.config.bean.LoginProperties;
 import com.seckill.platform.system.config.bean.SecurityProperties;
 import com.seckill.platform.system.logging.annotation.Log;
 import com.seckill.platform.system.modules.system.service.OnlineUserService;
+import com.seckill.platform.system.modules.system.service.UserDetailService;
 import com.seckill.platform.system.modules.system.service.dto.AuthUserDto;
+import com.seckill.platform.system.modules.system.service.dto.UserLoginDto;
 import com.seckill.platform.system.modules.system.service.openfegin.AuthService;
+import com.seckill.platform.system.urils.CurrentUserCacheUtils;
 import com.wf.captcha.base.Captcha;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -52,6 +52,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -67,7 +68,6 @@ import java.util.concurrent.TimeUnit;
 @Api(tags = "系统：系统授权接口")
 public class AuthorizationController {
     private final SecurityProperties properties;
-    private final RedisUtils redisUtils;
     private final OnlineUserService onlineUserService;
     private final AuthService authService;
     private final UserDetailService userDetailService;
@@ -81,9 +81,9 @@ public class AuthorizationController {
         // 密码解密
         String password = RsaUtils.decryptByPrivateKey(RsaProperties.privateKey, authUser.getPassword());
         // 查询验证码
-        String code = (String) redisUtils.get(authUser.getUuid());
+        String code = (String) RedissonUtils.getRBucket(authUser.getUuid()).get();
         // 清除验证码
-        redisUtils.del(authUser.getUuid());
+        RedissonUtils.getRBucket(authUser.getUuid()).delete();
         if (StringUtils.isBlank(code)) {
             throw new BadRequestException("验证码不存在或已过期");
         }
@@ -100,8 +100,8 @@ public class AuthorizationController {
         if(ResultCode.SUCCESS.getCode()!=commonResult.getCode()){
             throw new BadRequestException("登录账号认证失败");
         }
-        JSONObject jsonObject= (JSONObject) commonResult.getData();
-        String token = (String) jsonObject.get("token");
+        LinkedHashMap data = (LinkedHashMap) commonResult.getData();
+        String token = (String) data.get("token");
         UserLoginDto userLoginDto = userDetailService.loadUserByUsername(authUser.getUsername());
         // 保存在线信息
         onlineUserService.save(userLoginDto, token, request);
@@ -120,7 +120,7 @@ public class AuthorizationController {
     @ApiOperation("获取用户信息")
     @GetMapping(value = "/info")
     public CommonResult<Object> getUserInfo() {
-        return CommonResult.success(CurrentUserUtils.getCurrentUser());
+        return CommonResult.success(CurrentUserCacheUtils.getCurrentUser());
     }
 
     @ApiOperation("获取验证码")
@@ -135,7 +135,7 @@ public class AuthorizationController {
             captchaValue = captchaValue.split("\\.")[0];
         }
         // 保存
-        redisUtils.set(uuid, captchaValue, loginProperties.getLoginCode().getExpiration(), TimeUnit.MINUTES);
+        RedissonUtils.getRBucket(uuid).set(captchaValue, loginProperties.getLoginCode().getExpiration(), TimeUnit.MINUTES);
         // 验证码信息
         Map<String, Object> imgResult = new HashMap<String, Object>(2) {{
             put("img", captcha.toBase64());

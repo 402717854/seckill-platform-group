@@ -13,20 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.seckill.platform.system.common.dto;
+package com.seckill.platform.system.modules.system.service.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
 /**
-* @author Zheng Jie
-* @date 2019-6-10 16:32:18
-*/
+ * 避免序列化问题
+ * @author Zheng Jie
+ * @date 2018-11-30
+ */
 @Data
-public class DeptSmallDto implements Serializable {
+@NoArgsConstructor
+@AllArgsConstructor
+public class AuthorityDto implements Serializable {
 
-    private Long id;
-
-    private String name;
+    private String authority;
 }

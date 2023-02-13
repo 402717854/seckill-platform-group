@@ -20,6 +20,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 在线用户
@@ -69,6 +70,11 @@ public class OnlineUserDto {
      * 登录时间
      */
     private Date loginTime;
+
+    /**
+     * 用户数据权限
+     */
+    private List<Long> dataScopes;
 
 
 }

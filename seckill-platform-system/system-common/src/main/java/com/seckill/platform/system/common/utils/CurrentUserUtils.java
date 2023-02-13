@@ -19,9 +19,6 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.seckill.platform.system.common.dto.OnlineUserDto;
-import com.seckill.platform.system.common.dto.UserLoginDto;
-import com.seckill.platform.system.common.service.UserDetailService;
-import com.seckill.platform.system.common.utils.enums.DataScopeEnum;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -48,14 +45,6 @@ public class CurrentUserUtils {
         LOCAL.remove();
     }
 
-    /**
-     * 获取当前登录的用户
-     * @return UserDetails
-     */
-    public static UserLoginDto getCurrentUser() {
-        UserDetailService userService = SpringContextHolder.getBean(UserDetailService.class);
-        return userService.loadUserByUsername(getCurrentUsername());
-    }
 
     /**
      * 获取系统用户名称
@@ -66,35 +55,13 @@ public class CurrentUserUtils {
         OnlineUserDto onlineUserDto = CurrentUserUtils.get();
         return onlineUserDto.getUserName();
     }
-
-    /**
-     * 获取系统用户ID
-     * @return 系统用户ID
-     */
-    public static Long getCurrentUserId() {
-        UserLoginDto userDetails = getCurrentUser();
-        return new JSONObject(new JSONObject(userDetails).get("user")).get("id", Long.class);
-    }
-
     /**
      * 获取当前用户的数据权限
      * @return /
      */
     public static List<Long> getCurrentUserDataScope(){
-        UserLoginDto userDetails  = getCurrentUser();
-        JSONArray array = JSONUtil.parseArray(new JSONObject(userDetails).get("dataScopes"));
-        return JSONUtil.toList(array,Long.class);
+        OnlineUserDto onlineUserDto = CurrentUserUtils.get();
+        return onlineUserDto.getDataScopes();
     }
 
-    /**
-     * 获取数据权限级别
-     * @return 级别
-     */
-    public static String getDataScopeType() {
-        List<Long> dataScopes = getCurrentUserDataScope();
-        if(dataScopes.size() != 0){
-            return "";
-        }
-        return DataScopeEnum.ALL.getValue();
-    }
 }

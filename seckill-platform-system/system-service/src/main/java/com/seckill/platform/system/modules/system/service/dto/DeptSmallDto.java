@@ -13,32 +13,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.seckill.platform.system.common.dto;
+package com.seckill.platform.system.modules.system.service.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-import java.util.List;
+import java.io.Serializable;
 
 /**
- * @author Zheng Jie
- * @description 用户缓存时使用
- * @date 2022-05-26
- **/
-@Getter
-@Setter
-public class UserLoginDto extends UserDto {
+* @author Zheng Jie
+* @date 2019-6-10 16:32:18
+*/
+@Data
+public class DeptSmallDto implements Serializable {
 
-    private String password;
+    private Long id;
 
-    private Boolean isAdmin;
-    /**
-     * 用户部门ID
-     */
-    private  List<Long> dataScopes;
-
-    /**
-     * 用户权限信息
-     */
-    private List<AuthorityDto> authorityDtoList;
+    private String name;
 }

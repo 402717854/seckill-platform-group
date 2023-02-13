@@ -15,11 +15,8 @@
  */
 package com.seckill.platform.system.modules.system.service.impl;
 
+import com.seckill.framework.redisson.util.RedissonUtils;
 import com.seckill.platform.system.common.config.FileProperties;
-import com.seckill.platform.system.common.dto.JobSmallDto;
-import com.seckill.platform.system.common.dto.RoleSmallDto;
-import com.seckill.platform.system.common.dto.UserDto;
-import com.seckill.platform.system.common.dto.UserLoginDto;
 import com.seckill.platform.system.common.exception.BadRequestException;
 import com.seckill.platform.system.common.exception.EntityExistException;
 import com.seckill.platform.system.common.exception.EntityNotFoundException;
@@ -59,7 +56,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final FileProperties properties;
-    private final RedisUtils redisUtils;
     private final UserCacheManager userCacheManager;
     private final OnlineUserService onlineUserService;
     private final UserLoginMapper userLoginMapper;
@@ -119,13 +115,13 @@ public class UserServiceImpl implements UserService {
         }
         // 如果用户的角色改变
         if (!resources.getRoles().equals(user.getRoles())) {
-            redisUtils.del(CacheKey.DATA_USER + resources.getId());
-            redisUtils.del(CacheKey.MENU_USER + resources.getId());
-            redisUtils.del(CacheKey.ROLE_AUTH + resources.getId());
+            RedissonUtils.getRBucket(CacheKey.DATA_USER + resources.getId()).delete();
+            RedissonUtils.getRBucket(CacheKey.MENU_USER + resources.getId()).delete();
+            RedissonUtils.getRBucket(CacheKey.ROLE_AUTH + resources.getId()).delete();
         }
         // 修改部门会影响 数据权限
         if (!Objects.equals(resources.getDept(),user.getDept())) {
-            redisUtils.del(CacheKey.DATA_USER + resources.getId());
+            RedissonUtils.getRBucket(CacheKey.DATA_USER + resources.getId()).delete();
         }
         // 如果用户被禁用，则清除用户登录信息
         if(!resources.getEnabled()){
@@ -259,7 +255,7 @@ public class UserServiceImpl implements UserService {
      * @param id /
      */
     public void delCaches(Long id, String username) {
-        redisUtils.del(CacheKey.USER_ID + id);
+        RedissonUtils.getRBucket(CacheKey.USER_ID + id).delete();
         flushCache(username);
     }
 

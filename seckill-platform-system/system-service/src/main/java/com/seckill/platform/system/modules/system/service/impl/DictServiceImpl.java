@@ -16,6 +16,7 @@
 package com.seckill.platform.system.modules.system.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.seckill.framework.redisson.util.RedissonUtils;
 import com.seckill.platform.system.common.utils.*;
 import com.seckill.platform.system.modules.system.domain.Dict;
 import com.seckill.platform.system.modules.system.repository.DictRepository;
@@ -46,8 +47,6 @@ public class DictServiceImpl implements DictService {
 
     private final DictRepository dictRepository;
     private final DictMapper dictMapper;
-    private final RedisUtils redisUtils;
-
     @Override
     public Map<String, Object> queryAll(DictQueryCriteria dict, Pageable pageable){
         Page<Dict> page = dictRepository.findAll((root, query, cb) -> QueryHelp.getPredicate(root, dict, cb), pageable);
@@ -117,6 +116,6 @@ public class DictServiceImpl implements DictService {
     }
 
     public void delCaches(Dict dict){
-        redisUtils.del(CacheKey.DICT_NAME + dict.getName());
+        RedissonUtils.getRBucket(CacheKey.DICT_NAME + dict.getName()).delete();
     }
 }

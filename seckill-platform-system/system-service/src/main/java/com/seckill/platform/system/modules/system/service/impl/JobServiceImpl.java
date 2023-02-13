@@ -15,6 +15,7 @@
  */
 package com.seckill.platform.system.modules.system.service.impl;
 
+import com.seckill.framework.redisson.util.RedissonUtils;
 import com.seckill.platform.system.common.exception.BadRequestException;
 import com.seckill.platform.system.common.exception.EntityExistException;
 import com.seckill.platform.system.common.utils.*;
@@ -49,7 +50,6 @@ public class JobServiceImpl implements JobService {
 
     private final JobRepository jobRepository;
     private final JobMapper jobMapper;
-    private final RedisUtils redisUtils;
     private final UserRepository userRepository;
 
     @Override
@@ -101,7 +101,7 @@ public class JobServiceImpl implements JobService {
     public void delete(Set<Long> ids) {
         jobRepository.deleteAllByIdIn(ids);
         // 删除缓存
-        redisUtils.delByKeys(CacheKey.JOB_ID, ids);
+        RedissonUtils.getMap(CacheKey.JOB_ID).fastRemoveAsync(ids);
     }
 
     @Override

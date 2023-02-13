@@ -15,6 +15,7 @@
  */
 package com.seckill.platform.system.modules.system.service.impl;
 
+import com.seckill.framework.redisson.util.RedissonUtils;
 import com.seckill.platform.system.common.utils.*;
 import com.seckill.platform.system.modules.system.domain.Dict;
 import com.seckill.platform.system.modules.system.domain.DictDetail;
@@ -47,7 +48,6 @@ public class DictDetailServiceImpl implements DictDetailService {
     private final DictRepository dictRepository;
     private final DictDetailRepository dictDetailRepository;
     private final DictDetailMapper dictDetailMapper;
-    private final RedisUtils redisUtils;
 
     @Override
     public Map<String,Object> queryAll(DictDetailQueryCriteria criteria, Pageable pageable) {
@@ -91,6 +91,7 @@ public class DictDetailServiceImpl implements DictDetailService {
 
     public void delCaches(DictDetail dictDetail){
         Dict dict = dictRepository.findById(dictDetail.getDict().getId()).orElseGet(Dict::new);
-        redisUtils.del(CacheKey.DICT_NAME + dict.getName());
+        RedissonUtils.getRBucket(CacheKey.DICT_NAME + dict.getName()).delete();
     }
+
 }

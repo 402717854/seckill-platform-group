@@ -15,9 +15,6 @@
  */
 package com.seckill.platform.system.modules.system.service;
 
-import com.seckill.platform.system.common.dto.AuthorityDto;
-import com.seckill.platform.system.common.dto.RoleSmallDto;
-import com.seckill.platform.system.common.dto.UserDto;
 import com.seckill.platform.system.modules.system.domain.Role;
 import com.seckill.platform.system.modules.system.service.dto.*;
 import org.springframework.data.domain.Pageable;

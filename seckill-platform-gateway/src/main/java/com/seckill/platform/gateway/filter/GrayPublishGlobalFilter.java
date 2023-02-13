@@ -31,7 +31,7 @@ public class GrayPublishGlobalFilter implements GlobalFilter, Ordered {
         //③ 将灰度标记放入请求头中
         ServerHttpRequest tokenRequest = exchange.getRequest().mutate()
                 //将灰度标记传递过去
-                .header(GrayConstant.GRAY_HEADER,GrayRequestContextHolder.getGrayTag().toString())
+                .header(GrayConstant.GRAY_HEADER,GrayRequestContextHolder.getGrayTag()!=null?GrayRequestContextHolder.getGrayTag().toString():"false")
                 .build();
         ServerWebExchange build = exchange.mutate().request(tokenRequest).build();
         return chain.filter(build);

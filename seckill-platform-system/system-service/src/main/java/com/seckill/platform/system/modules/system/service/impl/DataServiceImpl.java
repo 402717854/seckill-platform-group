@@ -15,13 +15,13 @@
  */
 package com.seckill.platform.system.modules.system.service.impl;
 
-import com.seckill.platform.system.common.dto.RoleSmallDto;
-import com.seckill.platform.system.common.dto.UserDto;
 import com.seckill.platform.system.common.utils.enums.DataScopeEnum;
 import com.seckill.platform.system.modules.system.domain.Dept;
 import com.seckill.platform.system.modules.system.service.DataService;
 import com.seckill.platform.system.modules.system.service.DeptService;
 import com.seckill.platform.system.modules.system.service.RoleService;
+import com.seckill.platform.system.modules.system.service.dto.RoleSmallDto;
+import com.seckill.platform.system.modules.system.service.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;

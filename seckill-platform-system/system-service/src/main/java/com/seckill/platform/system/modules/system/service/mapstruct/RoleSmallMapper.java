@@ -16,8 +16,8 @@
 package com.seckill.platform.system.modules.system.service.mapstruct;
 
 import com.seckill.platform.system.common.base.BaseMapper;
-import com.seckill.platform.system.common.dto.RoleSmallDto;
 import com.seckill.platform.system.modules.system.domain.Role;
+import com.seckill.platform.system.modules.system.service.dto.RoleSmallDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 

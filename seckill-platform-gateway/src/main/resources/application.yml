@@ -17,10 +17,10 @@ spring:
             - Path=/auth/**
           filters:
             - StripPrefix=1
-        - id: seckill-platform-admin-route
-          uri: lb://seckill-platform-admin
+        - id: seckill-platform-system-route
+          uri: lb://seckill-platform-system
           predicates:
-            - Path=/admin/**
+            - Path=/system/**
           filters:
             - StripPrefix=1
         - id: seckill-platform-sso-route
@@ -47,10 +47,8 @@ spring:
         jwt:
           jwk-set-uri: 'http://localhost:8201/seckill-platform-auth/rsa/publicKey' #配置RSA的公钥访问地址
   redis:
-    database: 0
-    port: 6379
-    host: 192.168.66.9
-    password:
+    redisson:
+      file: classpath:redis/redisson-single.yaml
 secure:
   ignore:
     urls: #配置白名单路径
@@ -67,13 +65,13 @@ secure:
       - "/seckill-platform-auth/oauth/token"
       - "/seckill-platform-auth/rsa/publicKey"
       - "/seckill-platform-search/**"
-      - "/seckill-platform-sso/sso/login"
-      - "/seckill-platform-sso/sso/register"
-      - "/seckill-platform-sso/sso/getAuthCode"
+      - "/sso/login"
+      - "/sso/register"
+      - "/sso/getAuthCode"
       - "/seckill-platform-portal/home/**"
       - "/seckill-platform-portal/product/**"
-      - "/seckill-platform-admin/admin/login"
-      - "/seckill-platform-admin/admin/register"
+      - "/system/auth/login"
+      - "/system/auth/code"
 management: #开启SpringBoot Admin的监控
   endpoints:
     web:

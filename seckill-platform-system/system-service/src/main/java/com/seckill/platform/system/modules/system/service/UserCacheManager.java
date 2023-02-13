@@ -16,15 +16,16 @@
 package com.seckill.platform.system.modules.system.service;
 
 import cn.hutool.core.util.RandomUtil;
-import com.seckill.platform.system.common.dto.UserLoginDto;
-import com.seckill.platform.system.common.utils.RedisUtils;
+import com.seckill.framework.redisson.util.RedissonUtils;
 import com.seckill.platform.system.common.utils.StringUtils;
 import com.seckill.platform.system.config.bean.LoginProperties;
+import com.seckill.platform.system.modules.system.service.dto.UserLoginDto;
+import org.redisson.api.RMap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
+import java.time.Duration;
 
 /**
  * @author Zheng Jie
@@ -34,8 +35,6 @@ import javax.annotation.Resource;
 @Component
 public class UserCacheManager {
 
-    @Resource
-    private RedisUtils redisUtils;
     @Value("${login.user-cache.idle-time}")
     private long idleTime;
 
@@ -47,7 +46,7 @@ public class UserCacheManager {
     public UserLoginDto getUserCache(String userName) {
         if (StringUtils.isNotEmpty(userName)) {
             // 获取数据
-            Object obj = redisUtils.hget(LoginProperties.cacheKey, userName);
+            Object obj = RedissonUtils.getMap(LoginProperties.cacheKey).get(userName);
             if(obj != null){
                 return (UserLoginDto)obj;
             }
@@ -64,7 +63,9 @@ public class UserCacheManager {
         if (StringUtils.isNotEmpty(userName)) {
             // 添加数据, 避免数据同时过期
             long time = idleTime + RandomUtil.randomInt(900, 1800);
-            redisUtils.hset(LoginProperties.cacheKey, userName, user, time);
+            RMap<Object, Object> rMap = RedissonUtils.getMap(LoginProperties.cacheKey);
+            rMap.put(userName,user);
+            rMap.expireIfSet(Duration.ofMillis(time));
         }
     }
 
@@ -77,7 +78,8 @@ public class UserCacheManager {
     public void cleanUserCache(String userName) {
         if (StringUtils.isNotEmpty(userName)) {
             // 清除数据
-            redisUtils.hdel(LoginProperties.cacheKey, userName);
+            RMap<Object, Object> rMap = RedissonUtils.getMap(LoginProperties.cacheKey);
+            rMap.remove(userName);
         }
     }
 }

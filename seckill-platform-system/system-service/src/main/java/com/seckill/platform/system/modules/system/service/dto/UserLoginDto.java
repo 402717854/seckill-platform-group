@@ -13,15 +13,32 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.seckill.platform.system.common.service;
+package com.seckill.platform.system.modules.system.service.dto;
 
-import com.seckill.platform.system.common.dto.UserLoginDto;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
 
 /**
- * @author wangyongsheng
- * @date 2018-11-23
- */
-public interface UserDetailService {
+ * @author Zheng Jie
+ * @description 用户缓存时使用
+ * @date 2022-05-26
+ **/
+@Getter
+@Setter
+public class UserLoginDto extends UserDto {
 
-    UserLoginDto loadUserByUsername(String username);
+    private String password;
+
+    private Boolean isAdmin;
+    /**
+     * 用户数据权限
+     */
+    private  List<Long> dataScopes;
+
+    /**
+     * 用户权限信息
+     */
+    private List<AuthorityDto> authorityDtoList;
 }

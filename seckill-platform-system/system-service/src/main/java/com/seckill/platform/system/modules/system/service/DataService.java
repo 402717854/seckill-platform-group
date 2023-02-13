@@ -16,7 +16,7 @@
 package com.seckill.platform.system.modules.system.service;
 
 
-import com.seckill.platform.system.common.dto.UserDto;
+import com.seckill.platform.system.modules.system.service.dto.UserDto;
 
 import java.util.List;
 

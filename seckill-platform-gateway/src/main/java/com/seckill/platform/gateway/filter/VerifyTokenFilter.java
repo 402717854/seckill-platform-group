@@ -1,13 +1,12 @@
 package com.seckill.platform.gateway.filter;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.seckill.framework.redisson.util.RedissonUtils;
 import com.seckill.platform.common.api.CommonResult;
 import com.seckill.platform.common.constant.AuthConstant;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,11 +25,10 @@ import java.nio.charset.Charset;
  * Created by macro on 2020/7/24.
  */
 @Component
+@Slf4j
 public class VerifyTokenFilter implements WebFilter {
 
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
-    private final static String REDIS_DATABASE="seckill:system:user:";
+    private final static String REDIS_DATABASE="seckill:system:online-token-";
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         ServerHttpRequest serverHttpRequest = exchange.getRequest();
@@ -46,9 +44,9 @@ public class VerifyTokenFilter implements WebFilter {
                 try {
                     String key = REDIS_DATABASE + realToken;
                     //判断缓冲中是否存在登录用户信息
-                    JSONObject jsonObject = (JSONObject)redisTemplate.opsForValue().get(key);
+                    Object object = RedissonUtils.getRBucket(key).get();
                     //缓存中不存在的登录信息
-                    if(jsonObject==null){
+                    if(object==null){
                         response.setStatusCode(HttpStatus.OK);
                         response.getHeaders().set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
                         response.getHeaders().set("Access-Control-Allow-Origin","*");
@@ -58,7 +56,14 @@ public class VerifyTokenFilter implements WebFilter {
                         return response.writeWith(Mono.just(buffer));
                     }
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    log.error("全局过滤器:{}出现异常:{}",VerifyTokenFilter.class.getName(),e);
+                    response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
+                    response.getHeaders().set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+                    response.getHeaders().set("Access-Control-Allow-Origin","*");
+                    response.getHeaders().set("Cache-Control","no-cache");
+                    String body= JSONUtil.toJsonStr(CommonResult.failed("系统出错"));
+                    DataBuffer buffer =  response.bufferFactory().wrap(body.getBytes(Charset.forName("UTF-8")));
+                    return response.writeWith(Mono.just(buffer));
                 }
             }
         }

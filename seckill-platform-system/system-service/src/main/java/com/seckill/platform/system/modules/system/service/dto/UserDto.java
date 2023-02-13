@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.seckill.platform.system.common.dto;
+package com.seckill.platform.system.modules.system.service.dto;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.seckill.platform.system.common.base.BaseDTO;

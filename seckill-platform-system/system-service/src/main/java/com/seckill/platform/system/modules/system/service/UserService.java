@@ -15,9 +15,9 @@
  */
 package com.seckill.platform.system.modules.system.service;
 
-import com.seckill.platform.system.common.dto.UserDto;
-import com.seckill.platform.system.common.dto.UserLoginDto;
 import com.seckill.platform.system.modules.system.domain.User;
+import com.seckill.platform.system.modules.system.service.dto.UserDto;
+import com.seckill.platform.system.modules.system.service.dto.UserLoginDto;
 import com.seckill.platform.system.modules.system.service.dto.UserQueryCriteria;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;

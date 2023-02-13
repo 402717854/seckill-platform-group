@@ -17,6 +17,7 @@ package com.seckill.platform.system.modules.system.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.seckill.framework.redisson.util.RedissonUtils;
 import com.seckill.platform.system.common.exception.BadRequestException;
 import com.seckill.platform.system.common.utils.*;
 import com.seckill.platform.system.common.utils.enums.DataScopeEnum;
@@ -30,6 +31,7 @@ import com.seckill.platform.system.modules.system.service.dto.DeptDto;
 import com.seckill.platform.system.modules.system.service.dto.DeptQueryCriteria;
 import com.seckill.platform.system.modules.system.service.mapstruct.DeptMapper;
 import com.seckill.platform.system.common.utils.CurrentUserUtils;
+import com.seckill.platform.system.urils.CurrentUserCacheUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
@@ -55,13 +57,12 @@ public class DeptServiceImpl implements DeptService {
     private final DeptRepository deptRepository;
     private final DeptMapper deptMapper;
     private final UserRepository userRepository;
-    private final RedisUtils redisUtils;
     private final RoleRepository roleRepository;
 
     @Override
     public List<DeptDto> queryAll(DeptQueryCriteria criteria, Boolean isQuery) throws Exception {
         Sort sort = Sort.by(Sort.Direction.ASC, "deptSort");
-        String dataScopeType = CurrentUserUtils.getDataScopeType();
+        String dataScopeType = CurrentUserCacheUtils.getDataScopeType();
         if (isQuery) {
             if(dataScopeType.equals(DataScopeEnum.ALL.getValue())){
                 criteria.setPidIsNull(true);
@@ -279,7 +280,7 @@ public class DeptServiceImpl implements DeptService {
     public void delCaches(Long id){
         List<User> users = userRepository.findByRoleDeptId(id);
         // 删除数据权限
-        redisUtils.delByKeys(CacheKey.DATA_USER, users.stream().map(User::getId).collect(Collectors.toSet()));
-        redisUtils.del(CacheKey.DEPT_ID + id);
+        RedissonUtils.getMap(CacheKey.DATA_USER).fastRemoveAsync(users.stream().map(User::getId).collect(Collectors.toSet()));
+        RedissonUtils.getRBucket(CacheKey.DEPT_ID + id).delete();
     }
 }

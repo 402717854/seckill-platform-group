@@ -90,7 +90,7 @@ public class ConfigurerAdapter implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(customHandlerInterceptor)
                 .addPathPatterns("/**")
-                        .excludePathPatterns("/auth/login","/auth/code");
+                .excludePathPatterns("/auth/login","/auth/code");
     }
 
     /**

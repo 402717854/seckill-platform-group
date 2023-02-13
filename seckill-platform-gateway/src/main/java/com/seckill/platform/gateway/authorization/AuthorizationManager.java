@@ -57,24 +57,25 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
             return Mono.just(new AuthorizationDecision(true));
         }
         //管理端路径需校验权限
-        Map<Object, Object> resourceRolesMap = redisTemplate.opsForHash().entries(AuthConstant.RESOURCE_ROLES_MAP_KEY);
-        Iterator<Object> iterator = resourceRolesMap.keySet().iterator();
-        List<String> authorities = new ArrayList<>();
-        while (iterator.hasNext()) {
-            String pattern = (String) iterator.next();
-            if (pathMatcher.match(pattern, uri.getPath())) {
-                authorities.addAll(Convert.toList(String.class, resourceRolesMap.get(pattern)));
-            }
-        }
-        authorities = authorities.stream().map(i -> i = AuthConstant.AUTHORITY_PREFIX + i).collect(Collectors.toList());
-        //认证通过且角色匹配的用户可访问当前路径
-        return mono
-                .filter(Authentication::isAuthenticated)
-                .flatMapIterable(Authentication::getAuthorities)
-                .map(GrantedAuthority::getAuthority)
-                .any(authorities::contains)
-                .map(AuthorizationDecision::new)
-                .defaultIfEmpty(new AuthorizationDecision(false));
+        return Mono.just(new AuthorizationDecision(true));
+//        Map<Object, Object> resourceRolesMap = redisTemplate.opsForHash().entries(AuthConstant.RESOURCE_ROLES_MAP_KEY);
+//        Iterator<Object> iterator = resourceRolesMap.keySet().iterator();
+//        List<String> authorities = new ArrayList<>();
+//        while (iterator.hasNext()) {
+//            String pattern = (String) iterator.next();
+//            if (pathMatcher.match(pattern, uri.getPath())) {
+//                authorities.addAll(Convert.toList(String.class, resourceRolesMap.get(pattern)));
+//            }
+//        }
+//        authorities = authorities.stream().map(i -> i = AuthConstant.AUTHORITY_PREFIX + i).collect(Collectors.toList());
+//        //认证通过且角色匹配的用户可访问当前路径
+//        return mono
+//                .filter(Authentication::isAuthenticated)
+//                .flatMapIterable(Authentication::getAuthorities)
+//                .map(GrantedAuthority::getAuthority)
+//                .any(authorities::contains)
+//                .map(AuthorizationDecision::new)
+//                .defaultIfEmpty(new AuthorizationDecision(false));
     }
 
 }

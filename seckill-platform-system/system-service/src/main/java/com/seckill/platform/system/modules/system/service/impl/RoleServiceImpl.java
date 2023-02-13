@@ -16,9 +16,7 @@
 package com.seckill.platform.system.modules.system.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.seckill.platform.system.common.dto.AuthorityDto;
-import com.seckill.platform.system.common.dto.RoleSmallDto;
-import com.seckill.platform.system.common.dto.UserDto;
+import com.seckill.framework.redisson.util.RedissonUtils;
 import com.seckill.platform.system.common.exception.BadRequestException;
 import com.seckill.platform.system.common.exception.EntityExistException;
 import com.seckill.platform.system.common.utils.*;
@@ -57,7 +55,6 @@ public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
     private final RoleSmallMapper roleSmallMapper;
-    private final RedisUtils redisUtils;
     private final UserRepository userRepository;
     private final UserCacheManager userCacheManager;
 
@@ -214,10 +211,10 @@ public class RoleServiceImpl implements RoleService {
         if (CollectionUtil.isNotEmpty(users)) {
             users.forEach(item -> userCacheManager.cleanUserCache(item.getUsername()));
             Set<Long> userIds = users.stream().map(User::getId).collect(Collectors.toSet());
-            redisUtils.delByKeys(CacheKey.DATA_USER, userIds);
-            redisUtils.delByKeys(CacheKey.MENU_USER, userIds);
-            redisUtils.delByKeys(CacheKey.ROLE_AUTH, userIds);
+            RedissonUtils.getMap(CacheKey.DATA_USER).fastRemoveAsync(userIds);
+            RedissonUtils.getMap(CacheKey.MENU_USER).fastRemoveAsync(userIds);
+            RedissonUtils.getMap(CacheKey.MENU_USER).fastRemoveAsync(userIds);
         }
-        redisUtils.del(CacheKey.ROLE_ID + id);
+        RedissonUtils.getRBucket(CacheKey.ROLE_ID + id).delete();
     }
 }

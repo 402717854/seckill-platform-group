@@ -17,7 +17,7 @@ package com.seckill.platform.system.modules.system.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.seckill.platform.system.common.dto.RoleSmallDto;
+import com.seckill.framework.redisson.util.RedissonUtils;
 import com.seckill.platform.system.common.exception.BadRequestException;
 import com.seckill.platform.system.common.exception.EntityExistException;
 import com.seckill.platform.system.common.utils.*;
@@ -32,6 +32,7 @@ import com.seckill.platform.system.modules.system.service.MenuService;
 import com.seckill.platform.system.modules.system.service.RoleService;
 import com.seckill.platform.system.modules.system.service.dto.MenuDto;
 import com.seckill.platform.system.modules.system.service.dto.MenuQueryCriteria;
+import com.seckill.platform.system.modules.system.service.dto.RoleSmallDto;
 import com.seckill.platform.system.modules.system.service.mapstruct.MenuMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
@@ -58,8 +59,6 @@ public class MenuServiceImpl implements MenuService {
     private final UserRepository userRepository;
     private final MenuMapper menuMapper;
     private final RoleService roleService;
-    private final RedisUtils redisUtils;
-
     private static final String HTTP_PRE = "http://";
     private static final String HTTPS_PRE = "https://";
     private static final String YES_STR = "是";
@@ -349,12 +348,12 @@ public class MenuServiceImpl implements MenuService {
      */
     public void delCaches(Long id){
         List<User> users = userRepository.findByMenuId(id);
-        redisUtils.del(CacheKey.MENU_ID + id);
-        redisUtils.delByKeys(CacheKey.MENU_USER, users.stream().map(User::getId).collect(Collectors.toSet()));
+        RedissonUtils.getRBucket(CacheKey.MENU_ID + id).delete();
+        RedissonUtils.getMap(CacheKey.MENU_USER).fastRemoveAsync(users.stream().map(User::getId).collect(Collectors.toSet()));
         // 清除 Role 缓存
         List<Role> roles = roleService.findInMenuId(new ArrayList<Long>(){{
             add(id);
         }});
-        redisUtils.delByKeys(CacheKey.ROLE_ID, roles.stream().map(Role::getId).collect(Collectors.toSet()));
+        RedissonUtils.getMap(CacheKey.ROLE_ID).fastRemoveAsync(roles.stream().map(Role::getId).collect(Collectors.toSet()));
     }
 }

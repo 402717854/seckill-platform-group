@@ -22,15 +22,13 @@ import com.seckill.platform.system.common.exception.EntityExistException;
 import com.seckill.platform.system.common.exception.EntityNotFoundException;
 import com.seckill.platform.system.common.utils.ThrowableUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 /**
@@ -48,18 +46,7 @@ public class GlobalExceptionHandler {
     public CommonResult<ApiError> handleException(Throwable e){
         // 打印堆栈信息
         log.error(ThrowableUtil.getStackTrace(e));
-        return buildCommonResult(ApiError.error(e.getMessage()));
-    }
-
-    /**
-     * BadCredentialsException
-     */
-    @ExceptionHandler(BadCredentialsException.class)
-    public CommonResult<ApiError> badCredentialsException(BadCredentialsException e){
-        // 打印堆栈信息
-        String message = "坏的凭证".equals(e.getMessage()) ? "用户名或密码不正确" : e.getMessage();
-        log.error(message);
-        return buildCommonResult(ApiError.error(message));
+        return buildCommonResult(ApiError.error(INTERNAL_SERVER_ERROR.value(),"系统不可知异常"));
     }
 
     /**

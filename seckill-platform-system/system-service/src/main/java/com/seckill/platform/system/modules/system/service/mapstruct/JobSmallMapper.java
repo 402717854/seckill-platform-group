@@ -16,8 +16,8 @@
 package com.seckill.platform.system.modules.system.service.mapstruct;
 
 import com.seckill.platform.system.common.base.BaseMapper;
-import com.seckill.platform.system.common.dto.JobSmallDto;
 import com.seckill.platform.system.modules.system.domain.Job;
+import com.seckill.platform.system.modules.system.service.dto.JobSmallDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 

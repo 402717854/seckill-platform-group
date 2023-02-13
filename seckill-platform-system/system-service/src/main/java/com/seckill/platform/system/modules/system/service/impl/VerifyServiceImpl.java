@@ -21,16 +21,19 @@ import cn.hutool.extra.template.Template;
 import cn.hutool.extra.template.TemplateConfig;
 import cn.hutool.extra.template.TemplateEngine;
 import cn.hutool.extra.template.TemplateUtil;
+import com.seckill.framework.redisson.util.RedissonUtils;
 import com.seckill.platform.system.common.exception.BadRequestException;
-import com.seckill.platform.system.common.utils.RedisUtils;
 import com.seckill.platform.system.modules.system.service.VerifyService;
 import com.seckill.platform.system.tools.domain.vo.EmailVo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RBucket;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Zheng Jie
@@ -38,11 +41,11 @@ import java.util.Collections;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class VerifyServiceImpl implements VerifyService {
 
     @Value("${code.expiration}")
     private Long expiration;
-    private final RedisUtils redisUtils;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -53,11 +56,15 @@ public class VerifyServiceImpl implements VerifyService {
         // 如果不存在有效的验证码，就创建一个新的
         TemplateEngine engine = TemplateUtil.createEngine(new TemplateConfig("template", TemplateConfig.ResourceMode.CLASSPATH));
         Template template = engine.getTemplate("email/email.ftl");
-        Object oldCode =  redisUtils.get(redisKey);
+        RBucket<Object> rBucket = RedissonUtils.getRBucket(redisKey);
+        Object oldCode =  rBucket.get();
         if(oldCode == null){
             String code = RandomUtil.randomNumbers (6);
             // 存入缓存
-            if(!redisUtils.set(redisKey, code, expiration)){
+            try{
+                rBucket.set(code,expiration, TimeUnit.SECONDS);
+            }catch (Exception ex){
+                log.error("服务异常",ex);
                 throw new BadRequestException("服务异常，请联系网站负责人");
             }
             content = template.render(Dict.create().set("code",code));
@@ -72,11 +79,12 @@ public class VerifyServiceImpl implements VerifyService {
 
     @Override
     public void validated(String key, String code) {
-        Object value = redisUtils.get(key);
+        RBucket<Object> rBucket = RedissonUtils.getRBucket(key);
+        Object value = rBucket.get();
         if(value == null || !value.toString().equals(code)){
             throw new BadRequestException("无效验证码");
         } else {
-            redisUtils.del(key);
+            rBucket.delete();
         }
     }
 }

@@ -15,11 +15,17 @@
  */
 package com.seckill.platform.system.modules.system.service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.seckill.framework.redisson.util.RedissonUtils;
+import com.seckill.platform.common.api.ResultCode;
 import com.seckill.platform.system.common.dto.OnlineUserDto;
-import com.seckill.platform.system.common.dto.UserLoginDto;
+import com.seckill.platform.system.common.exception.BadRequestException;
 import com.seckill.platform.system.common.utils.*;
 import com.seckill.platform.system.config.bean.SecurityProperties;
+import com.seckill.platform.system.modules.system.service.dto.UserLoginDto;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.IterableUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -28,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Zheng Jie
@@ -38,11 +45,9 @@ import java.util.*;
 public class OnlineUserService {
 
     private final SecurityProperties properties;
-    private final RedisUtils redisUtils;
 
-    public OnlineUserService(SecurityProperties properties, RedisUtils redisUtils) {
+    public OnlineUserService(SecurityProperties properties) {
         this.properties = properties;
-        this.redisUtils = redisUtils;
     }
 
     /**
@@ -58,11 +63,13 @@ public class OnlineUserService {
         String address = StringUtils.getCityInfo(ip);
         OnlineUserDto onlineUserDto = null;
         try {
-            onlineUserDto = new OnlineUserDto(userLoginDto.getUsername(), userLoginDto.getNickName(), dept, browser , ip, address, EncryptUtils.desEncrypt(token), new Date());
+            onlineUserDto = new OnlineUserDto(userLoginDto.getUsername(), userLoginDto.getNickName(), dept, browser , ip, address, EncryptUtils.desEncrypt(token), new Date(),userLoginDto.getDataScopes());
         } catch (Exception e) {
             log.error(e.getMessage(),e);
+            throw new BadRequestException(ResultCode.FAILED);
         }
-        redisUtils.set(properties.getOnlineKey() + token, onlineUserDto, properties.getTokenValidityInSeconds()/1000);
+        String jsonString = JSONObject.toJSONString(onlineUserDto);
+        RedissonUtils.getRBucket(properties.getOnlineKey() + token).set(jsonString, properties.getTokenValidityInSeconds(), TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -85,11 +92,12 @@ public class OnlineUserService {
      * @return /
      */
     public List<OnlineUserDto> getAll(String filter){
-        List<String> keys = redisUtils.scan(properties.getOnlineKey() + "*");
+        Iterable<String> keysByPattern = RedissonUtils.getRKeys().getKeysByPattern(properties.getOnlineKey() + "*");
+        List<String> keys = IterableUtils.toList(keysByPattern);
         Collections.reverse(keys);
         List<OnlineUserDto> onlineUserDtos = new ArrayList<>();
         for (String key : keys) {
-            OnlineUserDto onlineUserDto = (OnlineUserDto) redisUtils.get(key);
+            OnlineUserDto onlineUserDto = (OnlineUserDto) RedissonUtils.getRBucket(key).get();
             if(StringUtils.isNotBlank(filter)){
                 if(onlineUserDto.toString().contains(filter)){
                     onlineUserDtos.add(onlineUserDto);
@@ -108,7 +116,7 @@ public class OnlineUserService {
      */
     public void kickOut(String key){
         key = properties.getOnlineKey() + key;
-        redisUtils.del(key);
+        RedissonUtils.getRBucket(key).delete();
     }
 
     /**
@@ -117,7 +125,7 @@ public class OnlineUserService {
      */
     public void logout(String token) {
         String key = properties.getOnlineKey() + token;
-        redisUtils.del(key);
+        RedissonUtils.getRBucket(key).delete();
     }
 
     /**
@@ -147,7 +155,7 @@ public class OnlineUserService {
      * @return /
      */
     public OnlineUserDto getOne(String key) {
-        return (OnlineUserDto)redisUtils.get(key);
+        return (OnlineUserDto)RedissonUtils.getRBucket(key).get();
     }
 
     /**
