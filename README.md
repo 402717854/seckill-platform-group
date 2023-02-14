@@ -1,5 +1,7 @@
-####项目讲解
-       项目:
+ #### 项目讲解
+      
+      以release版本线为基准
+      项目:
         seckill-platform-common 公共组件
         seckill-platform-gateway 网关服务
         seckill-platform-admin 后台系统用户登录权限服务
@@ -9,10 +11,9 @@
         -goods-service-group 商品服务
         -order-service-group 订单服务
         -seckill-service-group 秒杀活动服务
-
-
         seckill-platform-system 独立的后端平台
-####操作手册
+#### 操作手册 (release版本分支详见seckill-platform-system模块的文档)
+       master版本分支(实际已放弃)可以参看此操作文档
         准备:
        localhost:8080/resource/initResourceRolesMap redis权限数据预热(否则后端权限校验不通过)
        1、后台登录:(登录之后会将相关token存入到redis中)
