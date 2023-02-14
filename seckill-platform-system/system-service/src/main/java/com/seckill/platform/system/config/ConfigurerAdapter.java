@@ -90,7 +90,15 @@ public class ConfigurerAdapter implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(customHandlerInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/auth/login","/auth/code");
+                .excludePathPatterns("/auth/login","/auth/code",
+                        // swagger 文档
+                        "/swagger-ui.html","/swagger-resources/**","/webjars/**","/*/api-docs","/favicon.ico", "/doc.html",
+                        // 文件
+                        "/avatar/**","/file/**",
+                        // 阿里巴巴 druid
+                        "/druid/**",
+                        // 放行OPTIONS请求
+                        "/options");
     }
 
     /**

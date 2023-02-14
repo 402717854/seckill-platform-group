@@ -74,7 +74,7 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .description("一个简单且易上手的 Spring boot 后台管理框架")
-                .title("ELADMIN 接口文档")
+                .title("SECKILL-SYSTEM 接口文档")
                 .version("2.6")
                 .build();
     }

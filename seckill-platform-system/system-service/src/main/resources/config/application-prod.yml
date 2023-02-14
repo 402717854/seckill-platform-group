@@ -119,11 +119,11 @@ file:
     path: ~/file/
     avatar: ~/avatar/
   linux:
-    path: /home/eladmin/file/
-    avatar: /home/eladmin/avatar/
+    path: /home/seckill-system/file/
+    avatar: /home/seckill-system/avatar/
   windows:
-    path: C:\eladmin\file\
-    avatar: C:\eladmin\avatar\
+    path: C:\seckill-system\file\
+    avatar: C:\seckill-system\avatar\
   # 文件大小 /M
   maxSize: 100
   avatarMaxSize: 5

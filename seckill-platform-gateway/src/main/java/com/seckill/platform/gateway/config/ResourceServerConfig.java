@@ -35,6 +35,8 @@ public class ResourceServerConfig {
         //对白名单路径，直接移除JWT请求头
         http.addFilterBefore(ignoreUrlsRemoveTokenFilter,SecurityWebFiltersOrder.HTTP_BASIC);
         http.addFilterBefore(verifyTokenFilter,SecurityWebFiltersOrder.FORM_LOGIN);
+        //解决iframe同域下不可访问
+        http.headers().frameOptions().disable();
         http.authorizeExchange()
                 .pathMatchers(ArrayUtil.toArray(ignoreUrlsConfig.getUrls(),String.class)).permitAll()//白名单配置
                 .anyExchange().access(authorizationManager)//鉴权管理器配置

@@ -83,6 +83,14 @@
 - system-generator 系统代码生成模块
 ```
 
+#### 项目启动方式
+
+     启动redis(单机集群需要更换配置文件)
+     启动nacos
+     
+     1、启动seckill-platform-gateway
+     2、启动seckill-platform-auth
+     3、启动seckill-platform-system   system-service
 #### 特别鸣谢
 
 - 感谢 [七牛云](https://portal.qiniu.com/signup?utm_source=kaiyuan&utm_media=ELADMIN) 提供的免费云存储与CDN加速支持

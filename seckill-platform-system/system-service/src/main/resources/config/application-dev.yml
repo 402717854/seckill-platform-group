@@ -38,6 +38,8 @@ spring:
         enabled: true
         url-pattern: /druid/*
         reset-enable: false
+        allow: ""   # 允许访问的地址，如果allow没有配置或者为空，则允许所有访问
+        deny: ""   #拒绝访问的地址，deny优先于allow，如果在deny列表中，就算在allow列表中，也会被拒绝
       filter:
         stat:
           enabled: true
@@ -110,11 +112,11 @@ file:
     path: ~/file/
     avatar: ~/avatar/
   linux:
-    path: /home/eladmin/file/
-    avatar: /home/eladmin/avatar/
+    path: /home/seckill-system/file/
+    avatar: /home/seckill-system/avatar/
   windows:
-    path: C:\eladmin\file\
-    avatar: C:\eladmin\avatar\
+    path: C:\seckill-system\file\
+    avatar: C:\seckill-system\avatar\
   # 文件大小 /M
   maxSize: 100
   avatarMaxSize: 5
