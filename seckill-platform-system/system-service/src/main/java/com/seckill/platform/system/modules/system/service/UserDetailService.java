@@ -24,4 +24,5 @@ import com.seckill.platform.system.modules.system.service.dto.UserLoginDto;
 public interface UserDetailService {
 
     UserLoginDto loadUserByUsername(String username);
+    void logout(String token);
 }

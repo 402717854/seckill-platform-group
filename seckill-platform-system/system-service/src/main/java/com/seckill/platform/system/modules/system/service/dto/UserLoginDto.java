@@ -41,4 +41,8 @@ public class UserLoginDto extends UserDto {
      * 用户权限信息
      */
     private List<AuthorityDto> authorityDtoList;
+    /**
+     * 用户权限信息
+     */
+    private List<String> authList;
 }

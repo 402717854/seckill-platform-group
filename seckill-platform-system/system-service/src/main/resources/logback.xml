@@ -35,7 +35,7 @@
         <appender-ref ref="console" />
     </logger>
 
-    <logger name="jdbc.sqltiming" level="OFF" additivity="false">
+    <logger name="jdbc.sqltiming" level="INFO" additivity="false">
         <appender-ref ref="console" />
     </logger>
 

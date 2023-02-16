@@ -105,15 +105,15 @@ public class AuthorizationController {
         UserLoginDto userLoginDto = userDetailService.loadUserByUsername(authUser.getUsername());
         // 保存在线信息
         onlineUserService.save(userLoginDto, token, request);
+        if (loginProperties.isSingleLogin()) {
+            //踢掉之前已经登录的token
+            onlineUserService.checkLoginOnUser(authUser.getUsername(), token);
+        }
         // 返回 token 与 用户信息
         Map<String, Object> authInfo = new HashMap<String, Object>(2) {{
             put("token", properties.getTokenStartWith() + token);
             put("user", userLoginDto);
         }};
-        if (loginProperties.isSingleLogin()) {
-            //踢掉之前已经登录的token
-            onlineUserService.checkLoginOnUser(authUser.getUsername(), token);
-        }
         return CommonResult.success(authInfo);
     }
 
@@ -150,6 +150,7 @@ public class AuthorizationController {
         final String token = request.getHeader(properties.getHeader());
         if (token != null && token.startsWith(properties.getTokenStartWith())) {
             String realToken = token.replace(AuthConstant.TOKEN_PREFIX, "");
+            userDetailService.logout(realToken);
             onlineUserService.logout(realToken);
             return CommonResult.success("退出登录成功");
         }

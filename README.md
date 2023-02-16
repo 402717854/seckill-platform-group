@@ -8,10 +8,10 @@
         seckill-platform-sso 前台用户登录服务
         seckill-platform-auth 全平台鉴权服务
         seckill-platform-service-group 全平台业务服务组
-        -goods-service-group 商品服务
-        -order-service-group 订单服务
-        -seckill-service-group 秒杀活动服务
-        seckill-platform-system 独立的后端平台
+          -goods-service-group 商品服务
+          -order-service-group 订单服务
+          -seckill-service-group 秒杀活动服务
+        seckill-platform-system 后端系统服务
 #### 操作手册 (release版本分支详见seckill-platform-system模块的文档)
        master版本分支(实际已放弃)可以参看此操作文档
         准备:

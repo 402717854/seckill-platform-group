@@ -3,6 +3,7 @@ package com.seckill.platform.system.modules.system.service.impl;
 import com.seckill.platform.system.common.exception.BadRequestException;
 import com.seckill.platform.system.modules.system.service.*;
 import com.seckill.platform.system.modules.system.service.dto.UserLoginDto;
+import com.seckill.platform.system.urils.CurrentUserCacheUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ public class UserDetailServiceImpl implements UserDetailService {
 
     @Autowired
     private DataService dataService;
+
     @Override
     public UserLoginDto loadUserByUsername(String username) {
         UserLoginDto user = userCacheManager.getUserCache(username);
@@ -30,9 +32,15 @@ public class UserDetailServiceImpl implements UserDetailService {
             }
             user.setDataScopes(dataService.getDeptIds(user));
             user.setAuthorityDtoList(roleService.mapToGrantedAuthorities(user));
+            user.setAuthList(roleService.getUserAuthorities(user));
             // 添加缓存数据
             userCacheManager.addUserCache(username, user);
         }
         return user;
+    }
+
+    @Override
+    public void logout(String token) {
+        userCacheManager.cleanUserCache(CurrentUserCacheUtils.getCurrentUsername());
     }
 }

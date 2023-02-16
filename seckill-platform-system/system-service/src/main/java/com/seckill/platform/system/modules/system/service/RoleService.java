@@ -117,6 +117,7 @@ public interface RoleService {
      * @return 权限信息
      */
     List<AuthorityDto> mapToGrantedAuthorities(UserDto user);
+    List<String> getUserAuthorities(UserDto user);
 
     /**
      * 验证是否被用户关联

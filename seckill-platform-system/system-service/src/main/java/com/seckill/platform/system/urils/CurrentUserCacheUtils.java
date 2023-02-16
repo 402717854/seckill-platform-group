@@ -39,7 +39,8 @@ public class CurrentUserCacheUtils {
      */
     public static UserLoginDto getCurrentUser() {
         UserDetailService userService = SpringContextHolder.getBean(UserDetailService.class);
-        return userService.loadUserByUsername(getCurrentUsername());
+        UserLoginDto userLoginDto = userService.loadUserByUsername(getCurrentUsername());
+        return userLoginDto;
     }
 
     /**

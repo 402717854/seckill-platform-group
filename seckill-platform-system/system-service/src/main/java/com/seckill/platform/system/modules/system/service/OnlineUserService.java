@@ -97,7 +97,8 @@ public class OnlineUserService {
         Collections.reverse(keys);
         List<OnlineUserDto> onlineUserDtos = new ArrayList<>();
         for (String key : keys) {
-            OnlineUserDto onlineUserDto = (OnlineUserDto) RedissonUtils.getRBucket(key).get();
+            String onlineUserDtoStr = (String)RedissonUtils.getRBucket(key).get();
+            OnlineUserDto onlineUserDto = JSON.parseObject(onlineUserDtoStr, OnlineUserDto.class);
             if(StringUtils.isNotBlank(filter)){
                 if(onlineUserDto.toString().contains(filter)){
                     onlineUserDtos.add(onlineUserDto);

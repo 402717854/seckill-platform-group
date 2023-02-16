@@ -95,6 +95,10 @@
             <groupId>com.seckill.framework</groupId>
             <artifactId>seckill-platform-starter-redisson</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.seckill.framework</groupId>
+            <artifactId>seckill-platform-starter-cache-caffeine</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
