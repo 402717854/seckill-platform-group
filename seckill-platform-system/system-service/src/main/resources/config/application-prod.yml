@@ -4,15 +4,17 @@ spring:
     druid:
       db-type: com.alibaba.druid.pool.DruidDataSource
       driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      url: jdbc:log4jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:eladmin}?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false
+      url: jdbc:log4jdbc:mysql://${DB_HOST:192.168.66.55}:${DB_PORT:3306}/${DB_NAME:seckill_admin}?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false
       username: ${DB_USER:root}
-      password: ${DB_PWD:123456}
+      password: ${DB_PWD:Admin1234!}
       # 初始连接数
       initial-size: 5
       # 最小连接数
       min-idle: 15
       # 最大连接数
       max-active: 30
+      # 超时时间(以秒数为单位)
+      remove-abandoned-timeout: 180
       # 获取连接超时时间
       max-wait: 5000
       # 连接有效性检测时间
@@ -87,7 +89,7 @@ jwt:
   # 令牌过期时间 此处单位/毫秒 ，默认2小时，可在此网站生成 https://www.convertworld.com/zh-hans/time/milliseconds.html
   token-validity-in-seconds: 7200000
   # 在线用户key
-  online-key: online-token-
+  online-key: seckill:system:online-token-
   # 验证码
   code-key: code-key-
   # token 续期检查时间范围（默认30分钟，单位默认毫秒），在token即将过期的一段时间内用户操作了，则给用户的token续期

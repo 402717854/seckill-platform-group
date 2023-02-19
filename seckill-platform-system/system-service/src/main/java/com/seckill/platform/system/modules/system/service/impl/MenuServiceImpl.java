@@ -17,6 +17,7 @@ package com.seckill.platform.system.modules.system.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.fastjson.JSON;
 import com.seckill.framework.redisson.util.RedissonUtils;
 import com.seckill.platform.system.common.exception.BadRequestException;
 import com.seckill.platform.system.common.exception.EntityExistException;
@@ -35,6 +36,7 @@ import com.seckill.platform.system.modules.system.service.dto.MenuQueryCriteria;
 import com.seckill.platform.system.modules.system.service.dto.RoleSmallDto;
 import com.seckill.platform.system.modules.system.service.mapstruct.MenuMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
@@ -53,6 +55,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @CacheConfig(cacheNames = "menu")
+@Slf4j
 public class MenuServiceImpl implements MenuService {
 
     private final MenuRepository menuRepository;
@@ -106,7 +109,9 @@ public class MenuServiceImpl implements MenuService {
         List<RoleSmallDto> roles = roleService.findByUsersId(currentUserId);
         Set<Long> roleIds = roles.stream().map(RoleSmallDto::getId).collect(Collectors.toSet());
         LinkedHashSet<Menu> menus = menuRepository.findByRoleIdsAndTypeNot(roleIds, 2);
-        return menus.stream().map(menuMapper::toDto).collect(Collectors.toList());
+        List<MenuDto> collect = menus.stream().map(menuMapper::toDto).collect(Collectors.toList());
+        List<MenuDto> menuDtos = this.buildTree(collect);
+        return menuDtos;
     }
 
     @Override

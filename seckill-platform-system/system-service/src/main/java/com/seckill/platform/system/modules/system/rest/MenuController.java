@@ -63,8 +63,7 @@ public class MenuController {
     @ApiOperation("获取前端所需菜单")
     public ResponseEntity<Object> buildMenus(){
         List<MenuDto> menuDtoList = menuService.findByUser(CurrentUserCacheUtils.getCurrentUserId());
-        List<MenuDto> menuDtos = menuService.buildTree(menuDtoList);
-        return new ResponseEntity<>(menuService.buildMenus(menuDtos),HttpStatus.OK);
+        return new ResponseEntity<>(menuService.buildMenus(menuDtoList),HttpStatus.OK);
     }
 
     @ApiOperation("返回全部的菜单")

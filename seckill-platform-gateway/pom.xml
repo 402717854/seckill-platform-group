@@ -148,12 +148,63 @@
 <!--        </dependency>-->
     </dependencies>
 
+    <!--执行命令#构建正式包
+                 maven package -P prod -Dmaven.test.skip=true-->
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <!--默认激活配置,maven打包默认选用的配置-->
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!--当前环境自定义配置,标签名自定义-->
+                <profile.name>dev</profile.name>
+            </properties>
+        </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <profile.name>test</profile.name>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <profile.name>prod</profile.name>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
+        <resources>
+            <resource>
+                <!-- 指定资源文件夹，src/main/resources 默认打到classes下-->
+                <directory>src/main/resources</directory>
+                <!-- 默认为false，配置为true，则会将改资源目录下的xml和properties文件中的引用 @配置@  和 ${} 转换成真实值-->
+                <filtering>true</filtering>
+                <!-- 指定要打包的文件或目录（只包含资源源文件，不包括class -->
+                <!--                <includes>-->
+                <!--                    <include></include>-->
+                <!--                </includes>-->
+                <!-- 指定要过滤的文件或目录 （只包含资源源文件，不包括class-->
+                <!--                <excludes>-->
+                <!--                    <exclude></exclude>-->
+                <!--                </excludes>-->
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring.boot.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
