@@ -5,6 +5,7 @@ import com.seckill.platform.gateway.authorization.AuthorizationManager;
 import com.seckill.platform.gateway.component.RestAuthenticationEntryPoint;
 import com.seckill.platform.gateway.component.RestfulAccessDeniedHandler;
 import com.seckill.platform.gateway.filter.IgnoreUrlsRemoveTokenFilter;
+import com.seckill.platform.gateway.filter.PathWebFilter;
 import com.seckill.platform.gateway.filter.VerifyTokenFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -29,12 +30,15 @@ public class ResourceServerConfig {
     private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
     private final IgnoreUrlsRemoveTokenFilter ignoreUrlsRemoveTokenFilter;
     private final VerifyTokenFilter verifyTokenFilter;
+    private final PathWebFilter pathWebFilter;
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
+        //验证请求前缀是否是/gateway
+//        http.addFilterBefore(pathWebFilter,SecurityWebFiltersOrder.REACTOR_CONTEXT);
         //对白名单路径，直接移除JWT请求头
-        http.addFilterBefore(ignoreUrlsRemoveTokenFilter,SecurityWebFiltersOrder.HTTP_BASIC);
-        http.addFilterBefore(verifyTokenFilter,SecurityWebFiltersOrder.FORM_LOGIN);
+//        http.addFilterBefore(ignoreUrlsRemoveTokenFilter,SecurityWebFiltersOrder.HTTP_BASIC);
+//        http.addFilterBefore(verifyTokenFilter,SecurityWebFiltersOrder.FORM_LOGIN);
         //解决iframe同域下不可访问
         http.headers().frameOptions().disable();
         http.authorizeExchange()

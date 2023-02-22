@@ -6,6 +6,7 @@ import com.seckill.framework.redisson.util.RedissonUtils;
 import com.seckill.platform.common.api.CommonResult;
 import com.seckill.platform.common.constant.AuthConstant;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ import java.nio.charset.Charset;
  */
 @Component
 @Slf4j
-public class VerifyTokenFilter implements WebFilter {
+public class VerifyTokenFilter implements WebFilter , Ordered {
 
     private final static String REDIS_DATABASE="seckill:system:online-token-";
     @Override
@@ -68,5 +69,10 @@ public class VerifyTokenFilter implements WebFilter {
             }
         }
         return chain.filter(exchange);
+    }
+
+    @Override
+    public int getOrder() {
+        return 2;
     }
 }

@@ -3,6 +3,7 @@ package com.seckill.platform.gateway.filter;
 import com.seckill.platform.common.constant.AuthConstant;
 import com.seckill.platform.gateway.config.IgnoreUrlsConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.Ordered;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -20,7 +21,7 @@ import java.util.List;
  * Created by macro on 2020/7/24.
  */
 @Component
-public class IgnoreUrlsRemoveTokenFilter implements WebFilter {
+public class IgnoreUrlsRemoveTokenFilter implements WebFilter , Ordered {
     @Autowired
     private IgnoreUrlsConfig ignoreUrlsConfig;
     @Override
@@ -38,5 +39,10 @@ public class IgnoreUrlsRemoveTokenFilter implements WebFilter {
             }
         }
         return chain.filter(exchange);
+    }
+
+    @Override
+    public int getOrder() {
+        return 1;
     }
 }

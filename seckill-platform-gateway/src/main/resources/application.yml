@@ -1,6 +1,8 @@
 server:
   port: 8201
 spring:
+  api:
+    prefix: /gateway
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
