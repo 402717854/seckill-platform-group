@@ -7,7 +7,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.client.BaseClientDetails;
+import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +35,11 @@ public class AuthController {
 
     @Autowired
     private TokenEndpoint tokenEndpoint;
+
+    @Autowired
+    private JdbcClientDetailsService clientDetailsService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @ApiOperation("Oauth2获取token")
     @RequestMapping(value = "/token", method = RequestMethod.POST)
@@ -53,7 +63,18 @@ public class AuthController {
                 .refreshToken(oAuth2AccessToken.getRefreshToken().getValue())
                 .expiresIn(oAuth2AccessToken.getExpiresIn())
                 .tokenHead(AuthConstant.TOKEN_PREFIX).build();
-
         return CommonResult.success(oauth2TokenDto);
+    }
+
+    @ApiOperation("Oauth2添加客户端信息")
+    @RequestMapping(value = "/addClientDetails", method = RequestMethod.GET)
+    public CommonResult addClientDetails(){
+        BaseClientDetails baseClientDetails = new BaseClientDetails();
+        baseClientDetails.setClientId("admin-app");
+        baseClientDetails.setClientSecret(passwordEncoder.encode("12345"));
+        baseClientDetails.setScope(Arrays.asList("all"));
+        baseClientDetails.setAuthorizedGrantTypes(Arrays.asList("client_credentials","password","authorization_code","implicit","refresh_token"));
+        clientDetailsService.addClientDetails(baseClientDetails);
+        return CommonResult.success(null);
     }
 }

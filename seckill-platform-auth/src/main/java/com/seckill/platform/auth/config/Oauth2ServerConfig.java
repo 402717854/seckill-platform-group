@@ -13,7 +13,17 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
+import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.code.InMemoryAuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
+import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
 import javax.sql.DataSource;
 
@@ -34,41 +44,68 @@ public class Oauth2ServerConfig extends AuthorizationServerConfigurerAdapter {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-//    @Bean
-//    public AuthorizationCodeServices authorizationCodeServices(){
-//        return new JdbcAuthorizationCodeServices(dataSource);
-//    }
-//
-//    @Bean
-//    public ClientDetailsService clientDetailsService() {
-//        JdbcClientDetailsService clientDetailsService = new JdbcClientDetailsService(dataSource);
-//        clientDetailsService.setPasswordEncoder(passwordEncoder);
-//        return clientDetailsService;
-//    }
+    @Autowired
+    private ClientDetailsService clientDetailsService;
+
+    @Autowired
+    private TokenStore tokenStore;
+
+    @Bean
+    public AuthorizationCodeServices authorizationCodeServices(){
+        return new JdbcAuthorizationCodeServices(dataSource);
+//        return new InMemoryAuthorizationCodeServices();
+    }
+    @Bean
+    public TokenStore tokenStore() {
+        return new JdbcTokenStore(dataSource);
+    }
+    @Bean
+    public ClientDetailsService clientDetailsService() {
+        JdbcClientDetailsService clientDetailsService = new JdbcClientDetailsService(dataSource);
+        clientDetailsService.setPasswordEncoder(passwordEncoder);
+        return clientDetailsService;
+    }
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    //用来配置客户端详情服务
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.inMemory()
-                .withClient(AuthConstant.ADMIN_CLIENT_ID)
-                .secret(passwordEncoder.encode("123456"))
-                .scopes("all")
-                .authorizedGrantTypes("password", "refresh_token")
-                .accessTokenValiditySeconds(3600*24)
-                .refreshTokenValiditySeconds(3600*24*7)
-                .and()
-                .withClient(AuthConstant.PORTAL_CLIENT_ID)
-                .secret(passwordEncoder.encode("123456"))
-                .scopes("all")
-                .authorizedGrantTypes("password", "refresh_token")
-                .accessTokenValiditySeconds(3600*24)
-                .refreshTokenValiditySeconds(3600*24*7);
-//        clients.withClientDetails(clientDetailsService());
+//        clients.inMemory()
+//                .withClient(AuthConstant.ADMIN_CLIENT_ID)
+//                .secret(passwordEncoder.encode("123456"))
+//                .scopes("all")
+//                .authorizedGrantTypes("password", "refresh_token")
+//                .accessTokenValiditySeconds(3600*24)
+//                .refreshTokenValiditySeconds(3600*24*7)
+//                .and()
+//                .withClient(AuthConstant.PORTAL_CLIENT_ID)
+//                .secret(passwordEncoder.encode("123456"))
+//                .scopes("all")
+//                .authorizedGrantTypes("password", "refresh_token")
+//                .accessTokenValiditySeconds(3600*24)
+//                .refreshTokenValiditySeconds(3600*24*7);
+        clients.withClientDetails(clientDetailsService());
     }
 
+    @Bean
+    public AuthorizationServerTokenServices tokenServices(){
+        DefaultTokenServices services = new DefaultTokenServices();
+        services.setClientDetailsService(clientDetailsService);
+        services.setSupportRefreshToken(true);
+        services.setTokenStore(tokenStore);
+        /**
+         * 无效的时间配置，token的有效期优先选择数据库中客户端的配置，如需修改，修改表oauth_client_details中的配置
+         * @see DefaultTokenServices#getAccessTokenValiditySeconds(org.springframework.security.oauth2.provider.OAuth2Request)
+         */
+//        services.setAccessTokenValiditySeconds(10);//有效期10秒
+//        services.setRefreshTokenValiditySeconds(30);//有效期30秒
+        return services;
+    }
     /**
+     * 用来配置令牌（token）的访问端点和令牌服务(tokenservices)
      * AuthorizationServerEndpointsConfigurer端点配置
      * AuthorizationServerEndpointsConfigurer其实是一个装载类，装载Endpoints所有相关的类配置
      * （AuthorizationServer、TokenServices、TokenStore、ClientDetailsService、UserDetailsService）。
@@ -77,7 +114,10 @@ public class Oauth2ServerConfig extends AuthorizationServerConfigurerAdapter {
      */
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        endpoints.authenticationManager(authenticationManager)
+        endpoints
+                .authenticationManager(authenticationManager)
+                .authorizationCodeServices(authorizationCodeServices())
+                .tokenServices(tokenServices())
                 .userDetailsService(userDetailsService); //配置加载用户信息的服务
     }
 
@@ -88,6 +128,7 @@ public class Oauth2ServerConfig extends AuthorizationServerConfigurerAdapter {
      * @throws Exception
      */
     /**
+     * 用来配置令牌端点的安全约束.
      *  配置：安全检查流程,用来配置令牌端点（Token Endpoint）的安全与权限访问
      *  默认过滤器：BasicAuthenticationFilter
      *  1、oauth_client_details表中clientSecret字段加密【ClientDetails属性secret】

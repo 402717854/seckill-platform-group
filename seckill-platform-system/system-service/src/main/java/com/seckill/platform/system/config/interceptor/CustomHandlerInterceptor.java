@@ -28,7 +28,6 @@ public class CustomHandlerInterceptor extends HandlerInterceptorAdapter {
             return super.preHandle(request, response, handler);
         }
         String requestURI = request.getRequestURI();
-        System.out.println(requestURI);
         throw new BadRequestException(ResultCode.TOKEN_FAILED);
     }
 
