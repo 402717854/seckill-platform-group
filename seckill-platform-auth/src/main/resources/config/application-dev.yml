@@ -4,3 +4,6 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/seckill_auth?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
     password: root
+  redis:
+    host: 192.168.66.9
+    port: 6379

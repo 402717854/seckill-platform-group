@@ -50,7 +50,7 @@ public class DictServiceImpl implements DictService {
     @Override
     public Map<String, Object> queryAll(DictQueryCriteria dict, Pageable pageable){
         Page<Dict> page = dictRepository.findAll((root, query, cb) -> QueryHelp.getPredicate(root, dict, cb), pageable);
-        return PageUtil.toPage(page.map(dictMapper::toDto));
+        return PageUtils.toPage(page.map(dictMapper::toDto));
     }
 
     @Override

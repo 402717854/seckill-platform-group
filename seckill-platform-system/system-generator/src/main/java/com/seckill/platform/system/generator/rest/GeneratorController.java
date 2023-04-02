@@ -16,7 +16,7 @@
 package com.seckill.platform.system.generator.rest;
 
 import com.seckill.platform.system.common.exception.BadRequestException;
-import com.seckill.platform.system.common.utils.PageUtil;
+import com.seckill.platform.system.common.utils.PageUtils;
 import com.seckill.platform.system.generator.domain.ColumnInfo;
 import com.seckill.platform.system.generator.service.GenConfigService;
 import com.seckill.platform.system.generator.service.GeneratorService;
@@ -59,7 +59,7 @@ public class GeneratorController {
     public ResponseEntity<Object> queryTables(@RequestParam(defaultValue = "") String name,
                                     @RequestParam(defaultValue = "0")Integer page,
                                     @RequestParam(defaultValue = "10")Integer size){
-        int[] startEnd = PageUtil.transToStartEnd(page, size);
+        int[] startEnd = PageUtils.transToStartEnd(page, size);
         return new ResponseEntity<>(generatorService.getTables(name,startEnd), HttpStatus.OK);
     }
 
@@ -67,7 +67,7 @@ public class GeneratorController {
     @GetMapping(value = "/columns")
     public ResponseEntity<Object> queryColumns(@RequestParam String tableName){
         List<ColumnInfo> columnInfos = generatorService.getColumns(tableName);
-        return new ResponseEntity<>(PageUtil.toPage(columnInfos,columnInfos.size()), HttpStatus.OK);
+        return new ResponseEntity<>(PageUtils.toPage(columnInfos,columnInfos.size()), HttpStatus.OK);
     }
 
     @ApiOperation("保存字段数据")

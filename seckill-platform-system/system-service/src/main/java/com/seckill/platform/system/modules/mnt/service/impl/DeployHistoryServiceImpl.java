@@ -17,7 +17,7 @@ package com.seckill.platform.system.modules.mnt.service.impl;
 
 import cn.hutool.core.util.IdUtil;
 import com.seckill.platform.system.common.utils.FileUtil;
-import com.seckill.platform.system.common.utils.PageUtil;
+import com.seckill.platform.system.common.utils.PageUtils;
 import com.seckill.platform.system.common.utils.QueryHelp;
 import com.seckill.platform.system.common.utils.ValidationUtil;
 import com.seckill.platform.system.modules.mnt.domain.DeployHistory;
@@ -50,7 +50,7 @@ public class DeployHistoryServiceImpl implements DeployHistoryService {
     @Override
     public Object queryAll(DeployHistoryQueryCriteria criteria, Pageable pageable){
         Page<DeployHistory> page = deployhistoryRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root,criteria,criteriaBuilder),pageable);
-        return PageUtil.toPage(page.map(deployhistoryMapper::toDto));
+        return PageUtils.toPage(page.map(deployhistoryMapper::toDto));
     }
 
     @Override

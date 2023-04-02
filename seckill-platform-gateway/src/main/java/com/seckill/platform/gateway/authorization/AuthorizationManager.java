@@ -1,5 +1,6 @@
 package com.seckill.platform.gateway.authorization;
 
+import com.seckill.framework.redisson.util.RedissonUtils;
 import com.seckill.platform.common.constant.AuthConstant;
 import com.seckill.platform.gateway.config.IgnoreUrlsConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,8 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
     @Autowired
     private IgnoreUrlsConfig ignoreUrlsConfig;
 
+    private final static String REDIS_DATABASE="seckill:system:online-token-";
+
     @Override
     public Mono<AuthorizationDecision> check(Mono<Authentication> mono, AuthorizationContext authorizationContext) {
         ServerHttpRequest request = authorizationContext.getExchange().getRequest();
@@ -50,6 +53,11 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
         if (!pathMatcher.match(AuthConstant.ADMIN_URL_PATTERN, uri.getPath())) {
             return Mono.just(new AuthorizationDecision(true));
         }
+        String token = request.getHeaders().getFirst(AuthConstant.TOKEN_HEADER);
+        String realToken = token.replace(AuthConstant.TOKEN_PREFIX, "");
+        String key = REDIS_DATABASE + realToken;
+        //判断缓冲中是否存在登录用户信息
+        Object object = RedissonUtils.getRBucket(key).get();
         //管理端路径需校验权限
         return Mono.just(new AuthorizationDecision(true));
 //        Map<Object, Object> resourceRolesMap = redisTemplate.opsForHash().entries(AuthConstant.RESOURCE_ROLES_MAP_KEY);

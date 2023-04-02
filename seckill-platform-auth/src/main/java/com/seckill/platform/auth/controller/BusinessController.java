@@ -1,15 +1,13 @@
 package com.seckill.platform.auth.controller;
 
-import cn.hutool.json.JSON;
-import cn.hutool.json.JSONUtil;
 import com.seckill.platform.common.api.CommonResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.client.BaseClientDetails;
 import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +34,10 @@ public class BusinessController {
     @ApiOperation("Oauth2添加客户端信息")
     @RequestMapping(value = "/addClientDetails", method = RequestMethod.POST)
     public CommonResult addClientDetails(@RequestBody Map<String,Object> paramMap){
+        ClientDetails clientDetails = clientDetailsService.loadClientByClientId("admin-app");
+        if(clientDetails!=null){
+            return CommonResult.failed("该客户端已存在");
+        }
         BaseClientDetails baseClientDetails = new BaseClientDetails();
         baseClientDetails.setClientId("admin-app");
         baseClientDetails.setClientSecret(passwordEncoder.encode("12345"));
@@ -43,9 +45,10 @@ public class BusinessController {
         baseClientDetails.setAuthorizedGrantTypes(Arrays.asList("client_credentials","password","authorization_code","implicit","refresh_token"));
         baseClientDetails.setAccessTokenValiditySeconds(31536000);
         baseClientDetails.setRefreshTokenValiditySeconds(2592000);
-        baseClientDetails.setAutoApproveScopes(Arrays.asList("false"));
         BeanMap beanMap = BeanMap.create(baseClientDetails);
         beanMap.putAll(paramMap);
+        baseClientDetails.setAutoApproveScopes(Arrays.asList("false"));
+        baseClientDetails.setAdditionalInformation(null);
         clientDetailsService.addClientDetails(baseClientDetails);
         return CommonResult.success(null);
     }

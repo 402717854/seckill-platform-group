@@ -72,7 +72,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Object queryAll(RoleQueryCriteria criteria, Pageable pageable) {
         Page<Role> page = roleRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root, criteria, criteriaBuilder), pageable);
-        return PageUtil.toPage(page.map(roleMapper::toDto));
+        return PageUtils.toPage(page.map(roleMapper::toDto));
     }
 
     @Override

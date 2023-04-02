@@ -5,6 +5,7 @@ import com.seckill.platform.common.constant.AuthConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -56,10 +57,6 @@ public class Oauth2ServerConfig extends AuthorizationServerConfigurerAdapter {
 //        return new InMemoryAuthorizationCodeServices();
     }
     @Bean
-    public TokenStore tokenStore() {
-        return new JdbcTokenStore(dataSource);
-    }
-    @Bean
     public ClientDetailsService clientDetailsService() {
         JdbcClientDetailsService clientDetailsService = new JdbcClientDetailsService(dataSource);
         clientDetailsService.setPasswordEncoder(passwordEncoder);
@@ -95,7 +92,8 @@ public class Oauth2ServerConfig extends AuthorizationServerConfigurerAdapter {
         DefaultTokenServices services = new DefaultTokenServices();
         services.setClientDetailsService(clientDetailsService);
         services.setSupportRefreshToken(true);
-        services.setTokenStore(tokenStore);
+        services.setReuseRefreshToken(false);
+        services.setTokenStore(tokenStore);//指定token存储到相关存储组件
         /**
          * 无效的时间配置，token的有效期优先选择数据库中客户端的配置，如需修改，修改表oauth_client_details中的配置
          * @see DefaultTokenServices#getAccessTokenValiditySeconds(org.springframework.security.oauth2.provider.OAuth2Request)
@@ -115,10 +113,11 @@ public class Oauth2ServerConfig extends AuthorizationServerConfigurerAdapter {
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints
-                .authenticationManager(authenticationManager)
+                .authenticationManager(authenticationManager)//使用密码模式需要配置
                 .authorizationCodeServices(authorizationCodeServices())
                 .tokenServices(tokenServices())
-                .userDetailsService(userDetailsService); //配置加载用户信息的服务
+                .userDetailsService(userDetailsService) //配置加载用户信息的服务 //刷新令牌授权包含对用户信息的检查
+                .allowedTokenEndpointRequestMethods(HttpMethod.GET,HttpMethod.POST); //支持GET,POST请求
     }
 
     /**
@@ -148,5 +147,4 @@ public class Oauth2ServerConfig extends AuthorizationServerConfigurerAdapter {
                 .checkTokenAccess("isAuthenticated()") // 开启/oauth/check_token验证端口认证权限访问
                 .allowFormAuthenticationForClients();//允许客户表单认证
     }
-
 }

@@ -80,8 +80,8 @@ public class OnlineUserService {
      */
     public Map<String,Object> getAll(String filter, Pageable pageable){
         List<OnlineUserDto> onlineUserDtos = getAll(filter);
-        return PageUtil.toPage(
-                PageUtil.toPage(pageable.getPageNumber(),pageable.getPageSize(), onlineUserDtos),
+        return PageUtils.toPage(
+                PageUtils.toPage(pageable.getPageNumber(),pageable.getPageSize(), onlineUserDtos),
                 onlineUserDtos.size()
         );
     }

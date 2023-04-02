@@ -29,7 +29,7 @@ import cn.hutool.core.util.IdUtil;
 </#if>
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import ${package}.common.utils.PageUtil;
+import ${package}.common.utils.PageUtils;
 import ${package}.common.utils.QueryHelp;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +54,7 @@ public class ${className}ServiceImpl implements ${className}Service {
     @Override
     public Map<String,Object> queryAll(${className}QueryCriteria criteria, Pageable pageable){
         Page<${className}> page = ${changeClassName}Repository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root,criteria,criteriaBuilder),pageable);
-        return PageUtil.toPage(page.map(${changeClassName}Mapper::toDto));
+        return PageUtils.toPage(page.map(${changeClassName}Mapper::toDto));
     }
 
     @Override

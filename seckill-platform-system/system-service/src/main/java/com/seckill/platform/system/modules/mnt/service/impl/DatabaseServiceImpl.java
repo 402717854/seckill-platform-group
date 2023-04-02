@@ -17,7 +17,7 @@ package com.seckill.platform.system.modules.mnt.service.impl;
 
 import cn.hutool.core.util.IdUtil;
 import com.seckill.platform.system.common.utils.FileUtil;
-import com.seckill.platform.system.common.utils.PageUtil;
+import com.seckill.platform.system.common.utils.PageUtils;
 import com.seckill.platform.system.common.utils.QueryHelp;
 import com.seckill.platform.system.common.utils.ValidationUtil;
 import com.seckill.platform.system.modules.mnt.domain.Database;
@@ -53,7 +53,7 @@ public class DatabaseServiceImpl implements DatabaseService {
     @Override
     public Object queryAll(DatabaseQueryCriteria criteria, Pageable pageable){
         Page<Database> page = databaseRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root,criteria,criteriaBuilder),pageable);
-        return PageUtil.toPage(page.map(databaseMapper::toDto));
+        return PageUtils.toPage(page.map(databaseMapper::toDto));
     }
 
     @Override

@@ -52,7 +52,7 @@ public class DictDetailServiceImpl implements DictDetailService {
     @Override
     public Map<String,Object> queryAll(DictDetailQueryCriteria criteria, Pageable pageable) {
         Page<DictDetail> page = dictDetailRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root,criteria,criteriaBuilder),pageable);
-        return PageUtil.toPage(page.map(dictDetailMapper::toDto));
+        return PageUtils.toPage(page.map(dictDetailMapper::toDto));
     }
 
     @Override

@@ -58,7 +58,7 @@ public class LogServiceImpl implements LogService {
         Page<Log> page = logRepository.findAll(((root, criteriaQuery, cb) -> QueryHelp.getPredicate(root, criteria, cb)), pageable);
         String status = "ERROR";
         if (status.equals(criteria.getLogType())) {
-            return PageUtil.toPage(page.map(logErrorMapper::toDto));
+            return PageUtils.toPage(page.map(logErrorMapper::toDto));
         }
         return page;
     }
@@ -71,7 +71,7 @@ public class LogServiceImpl implements LogService {
     @Override
     public Object queryAllByUser(LogQueryCriteria criteria, Pageable pageable) {
         Page<Log> page = logRepository.findAll(((root, criteriaQuery, cb) -> QueryHelp.getPredicate(root, criteria, cb)), pageable);
-        return PageUtil.toPage(page.map(logSmallMapper::toDto));
+        return PageUtils.toPage(page.map(logSmallMapper::toDto));
     }
 
     @Override

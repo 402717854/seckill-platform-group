@@ -20,7 +20,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ZipUtil;
 import com.seckill.platform.system.common.exception.BadRequestException;
 import com.seckill.platform.system.common.utils.FileUtil;
-import com.seckill.platform.system.common.utils.PageUtil;
+import com.seckill.platform.system.common.utils.PageUtils;
 import com.seckill.platform.system.common.utils.StringUtils;
 import com.seckill.platform.system.generator.domain.ColumnInfo;
 import com.seckill.platform.system.generator.domain.GenConfig;
@@ -92,7 +92,7 @@ public class GeneratorServiceImpl implements GeneratorService {
         Query queryCount = em.createNativeQuery(countSql);
         queryCount.setParameter("table", StringUtils.isNotBlank(name) ? ("%" + name + "%") : "%%");
         Object totalElements = queryCount.getSingleResult();
-        return PageUtil.toPage(tableInfos, totalElements);
+        return PageUtils.toPage(tableInfos, totalElements);
     }
 
     @Override

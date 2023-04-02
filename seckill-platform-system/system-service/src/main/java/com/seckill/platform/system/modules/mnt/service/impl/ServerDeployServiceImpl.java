@@ -16,7 +16,7 @@
 package com.seckill.platform.system.modules.mnt.service.impl;
 
 import com.seckill.platform.system.common.utils.FileUtil;
-import com.seckill.platform.system.common.utils.PageUtil;
+import com.seckill.platform.system.common.utils.PageUtils;
 import com.seckill.platform.system.common.utils.QueryHelp;
 import com.seckill.platform.system.common.utils.ValidationUtil;
 import com.seckill.platform.system.modules.mnt.domain.ServerDeploy;
@@ -50,7 +50,7 @@ public class ServerDeployServiceImpl implements ServerDeployService {
     @Override
     public Object queryAll(ServerDeployQueryCriteria criteria, Pageable pageable){
         Page<ServerDeploy> page = serverDeployRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root,criteria,criteriaBuilder),pageable);
-        return PageUtil.toPage(page.map(serverDeployMapper::toDto));
+        return PageUtils.toPage(page.map(serverDeployMapper::toDto));
     }
 
     @Override

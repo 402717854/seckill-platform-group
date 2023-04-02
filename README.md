@@ -47,3 +47,9 @@
        head
          Authorization:Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJ3eXMiLCJzY29wZSI6WyJhbGwiXSwiaWQiOjEwLCJleHAiOjE2NjI1NTg4OTAsImF1dGhvcml0aWVzIjpbIuWJjeWPsOS8muWRmCJdLCJqdGkiOiI1YTVkNDVkOC03YTVjLTRiYjEtOTgxMy1jMzY2MDFkM2IwNzIiLCJjbGllbnRfaWQiOiJwb3J0YWwtYXBwIn0.Lea6eU-gh3mdl3oLuOzhtPnh2_ozqSjaLtgCOVzHrIevxSOiQobqYKyO3Ub4fm2Q5skJ7LkgDfobIZ9EpC-DHXip8ojaeApKAmjAEUz0MPRnO8_elbCZ9QVQSIzmxZJucZFia77l3A17X8JxXXf340iJEbKtQjg3Fc1I49HsAYc
          Content-Type:application/json
+
+
+#### 代码检测
+         下载地址:https://www.sonarsource.com/products/sonarqube/downloads/historical-downloads/
+         注意jdk版本号与sonarQube的版本兼容性
+         mvn sonar:sonar -Dsonar.host.url=http://192.168.66.21:9000 -Dsonar.login=5a8d9c701018a4545288b317472245ed94917185

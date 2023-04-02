@@ -17,7 +17,7 @@ package com.seckill.platform.system.modules.mnt.service.impl;
 
 import com.seckill.platform.system.common.exception.BadRequestException;
 import com.seckill.platform.system.common.utils.FileUtil;
-import com.seckill.platform.system.common.utils.PageUtil;
+import com.seckill.platform.system.common.utils.PageUtils;
 import com.seckill.platform.system.common.utils.QueryHelp;
 import com.seckill.platform.system.common.utils.ValidationUtil;
 import com.seckill.platform.system.modules.mnt.domain.App;
@@ -50,7 +50,7 @@ public class AppServiceImpl implements AppService {
     @Override
     public Object queryAll(AppQueryCriteria criteria, Pageable pageable){
         Page<App> page = appRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root,criteria,criteriaBuilder),pageable);
-        return PageUtil.toPage(page.map(appMapper::toDto));
+        return PageUtils.toPage(page.map(appMapper::toDto));
     }
 
     @Override

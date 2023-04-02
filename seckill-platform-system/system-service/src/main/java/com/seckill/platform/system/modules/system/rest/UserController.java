@@ -21,7 +21,7 @@ import com.seckill.platform.common.api.CommonResult;
 import com.seckill.platform.system.common.config.RsaProperties;
 import com.seckill.platform.system.common.exception.BadRequestException;
 import com.seckill.platform.system.common.utils.CurrentUserUtils;
-import com.seckill.platform.system.common.utils.PageUtil;
+import com.seckill.platform.system.common.utils.PageUtils;
 import com.seckill.platform.system.common.utils.RsaUtils;
 import com.seckill.platform.system.common.utils.enums.CodeEnum;
 import com.seckill.platform.system.logging.annotation.Log;
@@ -102,7 +102,7 @@ public class UserController {
             criteria.getDeptIds().addAll(dataScopes);
             return new ResponseEntity<>(userService.queryAll(criteria,pageable),HttpStatus.OK);
         }
-        return new ResponseEntity<>(PageUtil.toPage(null,0),HttpStatus.OK);
+        return new ResponseEntity<>(PageUtils.toPage(null,0),HttpStatus.OK);
     }
 
     @Log("新增用户")

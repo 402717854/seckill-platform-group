@@ -17,7 +17,7 @@ package com.seckill.platform.system.modules.system.rest;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.seckill.platform.system.common.exception.BadRequestException;
-import com.seckill.platform.system.common.utils.PageUtil;
+import com.seckill.platform.system.common.utils.PageUtils;
 import com.seckill.platform.system.logging.annotation.Log;
 import com.seckill.platform.system.modules.system.domain.Dept;
 import com.seckill.platform.system.modules.system.service.DeptService;
@@ -57,7 +57,7 @@ public class DeptController {
     @GetMapping
     public ResponseEntity<Object> queryDept(DeptQueryCriteria criteria) throws Exception {
         List<DeptDto> deptDtos = deptService.queryAll(criteria, true);
-        return new ResponseEntity<>(PageUtil.toPage(deptDtos, deptDtos.size()),HttpStatus.OK);
+        return new ResponseEntity<>(PageUtils.toPage(deptDtos, deptDtos.size()),HttpStatus.OK);
     }
 
     @ApiOperation("查询部门:根据ID获取同级与上级数据")

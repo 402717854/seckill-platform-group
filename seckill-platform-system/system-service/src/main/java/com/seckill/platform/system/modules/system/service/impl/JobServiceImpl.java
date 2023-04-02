@@ -55,7 +55,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public Map<String,Object> queryAll(JobQueryCriteria criteria, Pageable pageable) {
         Page<Job> page = jobRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root,criteria,criteriaBuilder),pageable);
-        return PageUtil.toPage(page.map(jobMapper::toDto).getContent(),page.getTotalElements());
+        return PageUtils.toPage(page.map(jobMapper::toDto).getContent(),page.getTotalElements());
     }
 
     @Override

@@ -26,7 +26,7 @@ import com.qiniu.storage.model.FileInfo;
 import com.qiniu.util.Auth;
 import com.seckill.platform.system.common.exception.BadRequestException;
 import com.seckill.platform.system.common.utils.FileUtil;
-import com.seckill.platform.system.common.utils.PageUtil;
+import com.seckill.platform.system.common.utils.PageUtils;
 import com.seckill.platform.system.common.utils.QueryHelp;
 import com.seckill.platform.system.common.utils.ValidationUtil;
 import com.seckill.platform.system.tools.domain.QiniuConfig;
@@ -86,7 +86,7 @@ public class QiNiuServiceImpl implements QiNiuService {
 
     @Override
     public Object queryAll(QiniuQueryCriteria criteria, Pageable pageable){
-        return PageUtil.toPage(qiniuContentRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root,criteria,criteriaBuilder),pageable));
+        return PageUtils.toPage(qiniuContentRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root,criteria,criteriaBuilder),pageable));
     }
 
     @Override

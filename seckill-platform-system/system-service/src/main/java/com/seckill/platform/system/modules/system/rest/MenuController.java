@@ -17,7 +17,7 @@ package com.seckill.platform.system.modules.system.rest;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.seckill.platform.system.common.exception.BadRequestException;
-import com.seckill.platform.system.common.utils.PageUtil;
+import com.seckill.platform.system.common.utils.PageUtils;
 import com.seckill.platform.system.logging.annotation.Log;
 import com.seckill.platform.system.modules.system.domain.Menu;
 import com.seckill.platform.system.modules.system.service.MenuService;
@@ -87,7 +87,7 @@ public class MenuController {
     @ApiOperation("查询菜单")
     public ResponseEntity<Object> queryMenu(MenuQueryCriteria criteria) throws Exception {
         List<MenuDto> menuDtoList = menuService.queryAll(criteria, true);
-        return new ResponseEntity<>(PageUtil.toPage(menuDtoList, menuDtoList.size()),HttpStatus.OK);
+        return new ResponseEntity<>(PageUtils.toPage(menuDtoList, menuDtoList.size()),HttpStatus.OK);
     }
 
     @ApiOperation("查询菜单:根据ID获取同级与上级数据")

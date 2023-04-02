@@ -27,7 +27,7 @@ import java.util.Map;
  * @author Zheng Jie
  * @date 2018-12-10
  */
-public class PageUtil extends cn.hutool.core.util.PageUtil {
+public class PageUtils extends cn.hutool.core.util.PageUtil {
 
     /**
      * List 分页
