@@ -1,0 +1,66 @@
+clusterServersConfig:
+  #连接空闲时间,单位：毫秒  默认10000
+  idleConnectionTimeout: 10000
+  #同任意节点建立连接时的等待超时，单位：毫秒，默认10000
+  connectTimeout: 10000
+  #等待节点回复命令的时间，该时间从命令发送成功时开始计时，默认3000
+  timeout: 3000
+  #命令失败重试次数
+  retryAttempts: 3
+  #命令重试发送时间间隔。单位：毫秒
+  retryInterval: 1500
+  #从可用服务器的内部列表中排除Redis从属服务器重新连接尝试的间隔。
+  failedSlaveReconnectionInterval: 3000
+  #当此服务器上第一次执行Redis命令失败的时间间隔达到slaveFailsInterval值时，无法执行命令的Redis从属节点将从可用节点的内部列表中排除。
+  failedSlaveCheckInterval: 180000
+  password: redis
+  #单个连接最大订阅数量
+  subscriptionsPerConnection: 5
+  clientName: null
+  #负载均衡算法类的选择
+  loadBalancer: !<org.redisson.connection.balancer.RoundRobinLoadBalancer> {}
+  #从节点发布和订阅连接的最小空闲连接数
+  subscriptionConnectionMinimumIdleSize: 1
+  #从节点发布订和订阅李娜劫持大小  默认：50
+  subscriptionConnectionPoolSize: 50
+  #从节点最小空闲连接数 默认24
+  slaveConnectionMinimumIdleSize: 24
+  #从节点连接池大小 默认64
+  slaveConnectionPoolSize: 64
+  #主节点最小空闲连接数 默认24
+  masterConnectionMinimumIdleSize: 24
+  #主节点连接池大小  默认64
+  masterConnectionPoolSize: 64
+  #只在从节点读取
+  readMode: "SLAVE"
+  #订阅操作的负载均衡模式
+  subscriptionMode: "SLAVE"
+  #集群地址
+  nodeAddresses:
+    - "redis://10.162.4.84:6379"
+    - "redis://10.162.4.85:6379"
+    - "redis://10.162.4.86:6379"
+    - "redis://10.162.4.87:6379"
+    - "redis://10.162.4.88:6379"
+    - "redis://10.162.4.89:6379"
+  #对redis集群节点状态扫描的时间间隔，单位毫秒，默认1000
+  scanInterval: 1000
+  pingConnectionInterval: 0
+  #是否启用TCP长连接
+  keepAlive: false
+  #启用TCP无延迟连接
+  tcpNoDelay: false
+#所有redis节点客户端之间共享的线程数
+threads: 16
+#Redisson使用的所有redis客户端之间共享的线程数
+nettyThreads: 32
+#编码方式
+codec: !<org.redisson.codec.JsonJacksonCodec> {}
+#传输模式
+transportMode: "NIO"
+#开启看门狗机制，分布式锁失效时间,防止死锁,默认30000
+lockWatchdogTimeout: 30000
+#若看门狗未将可靠主题订阅服务器延长到下一个超时时间间隔，则该订阅服务器将在超时后过期。默认600000ms
+reliableTopicWatchdogTimeout: 600000
+#定义是按到达顺序处理PubSub消息还是并发处理消息。此设置仅适用于每个通道的PubSub消息。
+keepPubSubOrder: true

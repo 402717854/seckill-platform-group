@@ -1,0 +1,12 @@
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: http://nacos-registry:8848
+        group: seckill-platform-group
+        namespace: 9739d612-297a-4a7c-b098-6090edf88dea
+      config:
+        server-addr: http://nacos-registry:8848
+        file-extension: yaml
+        group: seckill-platform-group
+        namespace: 9739d612-297a-4a7c-b098-6090edf88dea

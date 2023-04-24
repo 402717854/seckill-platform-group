@@ -1,0 +1,5 @@
+spring:
+  profiles:
+    active: ${profile.name}
+  application:
+    name: seckill-platform-drools
