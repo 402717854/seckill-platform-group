@@ -1,0 +1,23 @@
+singleServerConfig:
+  address: redis://127.0.0.1:6379
+  subscriptionConnectionMinimumIdleSize: 1
+  subscriptionConnectionPoolSize: 50
+  connectionMinimumIdleSize: 24
+  connectionPoolSize: 64
+  database: 0
+  dnsMonitoringInterval: 5000
+  #连接到任何Redis服务器时超时ms
+  connectTimeout: 10000
+  #等待节点回复命令的时间，该时间从命令发送成功时开始计时，默认3000
+  timeout: 3000
+  #命令失败重试次数
+  retryAttempts: 3
+  #命令重试发送时间间隔。单位：毫秒
+  retryInterval: 1500
+  #单个连接最大订阅数量
+  subscriptionsPerConnection: 5
+  password: null
+threads: 16
+nettyThreads: 32
+codec: !<org.redisson.codec.JsonJacksonCodec> {}
+transportMode: "NIO"
